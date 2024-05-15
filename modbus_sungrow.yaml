@@ -1558,6 +1558,482 @@ modbus:
         state_class: measurement
         scan_interval: 10
 
+      ###################################
+      # holding registers of charger
+      ###################################
+
+      - name: Charger system clock year
+        unique_id: ac_system_clock_year
+        device_address: !secret sungrow_modbus_slave
+        address: 4999 # reg 5000
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # Systemzeit Jahr unit:
+
+      - name: Charger system clock month
+        unique_id: ac_system_clock_month
+        device_address: !secret sungrow_modbus_slave
+        address: 5000 # reg 5001
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # Systemzeit Monat unit:
+
+      - name: Charger system clock day
+        unique_id: ac_system_clock_day
+        device_address: !secret sungrow_modbus_slave
+        address: 5001 # reg 5002
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # Systemzeit Tag unit:
+
+      - name: Charger system clock hour
+        unique_id: ac_system_clock_hour
+        device_address: !secret sungrow_modbus_slave
+        address: 5002 # reg 5003
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # Systemzeit Stunde unit:
+
+      - name: Charger system clock minute
+        unique_id: ac_system_clock_minute
+        device_address: !secret sungrow_modbus_slave
+        address: 5003 # reg 5004
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # Systemzeit Minute unit:
+
+      - name: Charger start stop
+        unique_id: ac_start_stop
+        device_address: !secret sungrow_modbus_slave
+        address: 12999 # reg 13000
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # Start/Stop Start(CF) Stop (CF) unit:
+
+      - name: Charger load adjustment mode
+        unique_id: ac_load_adjustment_mode
+        device_address: !secret sungrow_modbus_slave
+        address: 13001 # reg 13002
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # Energie Management Modus ON/OFF(1) / Energieoptimiert(2) unit:
+
+      - name: Charger load 1 timing period 1 start hour
+        unique_id: ac_load_1_timing_period_1_start_hour
+        device_address: !secret sungrow_modbus_slave
+        address: 13002 # reg 13003
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        #  unit:h
+
+      - name: Charger load 1 timing period 1 start minute
+        unique_id: ac_load_1_timing_period_1_start_minute
+        device_address: !secret sungrow_modbus_slave
+        address: 13003 # reg 13004
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        #  unit:min
+
+      - name: Charger load 1 timing period 1 end hour
+        unique_id: ac_load_1_timing_period_1_end_hour
+        device_address: !secret sungrow_modbus_slave
+        address: 13004 # reg 13005
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        #  unit:min
+
+      - name: Charger load 1 timing period 1 end minute
+        unique_id: ac_load_1_timing_period_1_end_minute
+        device_address: !secret sungrow_modbus_slave
+        address: 13005 # reg 13006
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        #  unit:h
+
+      - name: Charger load 1 timing period 2 start hour
+        unique_id: ac_load_1_timing_period_2_start_hour
+        device_address: !secret sungrow_modbus_slave
+        address: 13006 # reg 13007
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        #  unit:h
+
+      - name: Charger load 1 timing period 2 start minute
+        unique_id: ac_load_1_timing_period_2_start_minute
+        device_address: !secret sungrow_modbus_slave
+        address: 13007 # reg 13008
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        #  unit:min
+
+      - name: Charger load 1 timing period 2 end hour
+        unique_id: ac_load_1_timing_period_2_end_hour
+        device_address: !secret sungrow_modbus_slave
+        address: 13008 # reg 13009
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        #  unit:h
+
+      - name: Charger load 1 timing period 2 end minute
+        unique_id: ac_load_1_timing_period_2_end_minute
+        device_address: !secret sungrow_modbus_slave
+        address: 13009 # reg 13010
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        #  unit:min
+
+      - name: Charger load 1 on off mode
+        unique_id: ac_load_1_on_off_mode
+        device_address: !secret sungrow_modbus_slave
+        address: 13010 # reg 13011
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # Load 1 ON/OFF mode    ON(170/AA)/ OFF (85/55) unit:
+
+      - name: Charger load 1 power optimized mode start hour
+        unique_id: ac_load_1_power_optimized_mode_start_hour
+        device_address: !secret sungrow_modbus_slave
+        address: 13011 # reg 13012
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        #  unit:h
+
+      - name: Charger load 1 power optimized mode start minute
+        unique_id: ac_load_1_power_optimized_mode_start_minute
+        device_address: !secret sungrow_modbus_slave
+        address: 13012 # reg 13013
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        #  unit:min
+
+      - name: Charger load 1 power optimized mode end hour
+        unique_id: ac_load_1_power_optimized_mode_end_hour
+        device_address: !secret sungrow_modbus_slave
+        address: 13013 # reg 13014
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        #  unit:h
+
+      - name: Charger load 1 power optimized mode end minute 
+        unique_id: ac_load_1_power_optimized_mode_end_minute_
+        device_address: !secret sungrow_modbus_slave
+        address: 13014 # reg 13015
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        #  unit:min
+
+      - name: Charger optimized power of load 1
+        unique_id: ac_optimized_power_of_load_1
+        device_address: !secret sungrow_modbus_slave
+        address: 13015 # reg 13016
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # Optimized power of load 1 unit:W
+
+      - name: Charger ems mode selection 
+        unique_id: ac_ems_mode_selection_
+        device_address: !secret sungrow_modbus_slave
+        address: 13049 # reg 13050
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # EMS Modus unit:
+
+      - name: Charger charge discharge command
+        unique_id: ac_charge_discharge_command
+        device_address: !secret sungrow_modbus_slave
+        address: 13050 # reg 13051
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # Ext. Sollvorgabe Laden170(AA)/ Stop187(BB)/ Entladen204(CC)  unit:
+
+      - name: Charger charge discharge power
+        unique_id: ac_charge_discharge_power
+        device_address: !secret sungrow_modbus_slave
+        address: 13051 # reg 13052
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # Ext. Sollvorgabe Lade/Entladeleistung unit:
+
+      - name: Charger batterie nominal voltage
+        unique_id: ac_batterie_nominal_voltage
+        device_address: !secret sungrow_modbus_slave
+        address: 13055 # reg 13056
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # Nominal Spannung Batterie unit:V
+
+      - name: Charger battery capacity
+        unique_id: ac_battery_capacity
+        device_address: !secret sungrow_modbus_slave
+        address: 13056 # reg 13057
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # Batteriekapazität unit:Ah
+
+      - name: Charger max soc
+        unique_id: ac_max_soc
+        device_address: !secret sungrow_modbus_slave
+        address: 13057 # reg 13058
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # Max SOC unit:%
+
+      - name: Charger min soc
+        unique_id: ac_min_soc
+        device_address: !secret sungrow_modbus_slave
+        address: 13058 # reg 13059
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # Min SOC unit:%
+
+      - name: Charger battery overvoltage threshold
+        unique_id: ac_battery_overvoltage_threshold
+        device_address: !secret sungrow_modbus_slave
+        address: 13059 # reg 13060
+        input_type: holding
+        data_type: int16
+        scan_interval: 600
+        # Batterie Überspannungs Threshold unit:V
+
+      - name: Charger battery undervoltage threshold
+        unique_id: ac_battery_undervoltage_threshold
+        device_address: !secret sungrow_modbus_slave
+        address: 13060 # reg 13061
+        input_type: holding
+        data_type: int16
+        scan_interval: 600
+        # Batterie Unterspannungs Threshold unit:V
+
+      - name: Charger battery over temperature threshold
+        unique_id: ac_battery_over_temperature_threshold
+        device_address: !secret sungrow_modbus_slave
+        address: 13061 # reg 13062
+        input_type: holding
+        data_type: int16
+        scan_interval: 600
+        # Batterie Übertemperatur Threshold unit:°C
+
+      - name: Charger battery under temperature threshold
+        unique_id: ac_battery_under_temperature_threshold
+        device_address: !secret sungrow_modbus_slave
+        address: 13062 # reg 13063
+        input_type: holding
+        data_type: int16
+        scan_interval: 600
+        # Batterie Übertemperatur Threshold unit:°C
+
+      - name: Charger terminated current of constant voltage charging
+        unique_id: ac_terminated_current_of_constant_voltage_charging
+        device_address: !secret sungrow_modbus_slave
+        address: 13064 # reg 13065
+        input_type: holding
+        data_type: int16
+        scan_interval: 600
+        #  unit:°C
+
+      - name: Charger max discharge current
+        unique_id: ac_max_discharge_current
+        device_address: !secret sungrow_modbus_slave
+        address: 13065 # reg 13066
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # Max. Entlade Strom unit:A
+
+      - name: Charger max charge current
+        unique_id: ac_max_charge_current
+        device_address: !secret sungrow_modbus_slave
+        address: 13066 # reg 13067
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # Max. Lade Strom unit:A
+
+      - name: Charger external ems heartbeat
+        unique_id: ac_external_ems_heartbeat
+        device_address: !secret sungrow_modbus_slave
+        address: 13079 # reg 13080
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        #  unit:
+
+      - name: Charger start charging power
+        unique_id: ac_start_charging_power
+        device_address: !secret sungrow_modbus_slave
+        address: 13083 # reg 13084
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # u.U. Leistung, mit welcher ein Ladevorgang begonnen wird. Klärung erwünscht unit:W
+
+      - name: Charger start discharging power
+        unique_id: ac_start_discharging_power
+        device_address: !secret sungrow_modbus_slave
+        address: 13084 # reg 13085
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # u.U. Leistung, mit welcher ein Entladevorgang begonnen wird. Klärung erwünscht unit:W
+
+      - name: Charger meter comm
+        unique_id: ac_meter_comm
+        device_address: !secret sungrow_modbus_slave
+        address: 13085 # reg 13086
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # Kommunikation mit Energie Meter des WR unit:W
+
+      - name: Charger export power limitation
+        unique_id: ac_export_power_limitation
+        device_address: !secret sungrow_modbus_slave
+        address: 13086 # reg 13087
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # Einspeise Limitierung AN(170/AA) AUS(85/55h) unit:
+
+      - name: Charger soc reserve
+        unique_id: ac_soc_reserve
+        device_address: !secret sungrow_modbus_slave
+        address: 13099 # reg 13100
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # SOC Reserve unit:%
+
+      - name: Charger wb 33530
+        unique_id: ac_wb_33530
+        device_address: !secret sungrow_modbus_slave
+        address: 33530 # reg 33531
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # wb unit:
+
+      - name: Charger wb charging mode
+        unique_id: ac_wb_charging_mode
+        device_address: !secret sungrow_modbus_slave
+        address: 33540 # reg 33541
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # wb charging mode (160=fastCharge 161=pvSurplus 162=quantity&timeBased 163=userDefined) unit:
+
+      - name: Charger wb charching quantity
+        unique_id: ac_wb_charching_quantity
+        device_address: !secret sungrow_modbus_slave
+        address: 33541 # reg 33542
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # wb charching quantity (e.g. 12kwh = 120) unit:
+
+      - name: Charger wb charching duration
+        unique_id: ac_wb_charching_duration
+        device_address: !secret sungrow_modbus_slave
+        address: 33542 # reg 33543
+        input_type: holding
+        data_type: uint32
+        scan_interval: 600
+        # wb charching duration unit:
+
+      - name: Charger wb 33543
+        unique_id: ac_wb_33543
+        device_address: !secret sungrow_modbus_slave
+        address: 33543 # reg 33544
+        input_type: holding
+        data_type: uint32
+        scan_interval: 600
+        # wb unit:
+
+      - name: Charger wb charching power user defined charge
+        unique_id: ac_wb_charching_power_user_defined_charge
+        device_address: !secret sungrow_modbus_slave
+        address: 33544 # reg 33545
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # wb user defined charching (eg. 10A = 100) unit:
+
+      - name: Charger wb user defined charge start time
+        unique_id: ac_wb_user_defined_charge_start_time
+        device_address: !secret sungrow_modbus_slave
+        address: 33545 # reg 33546
+        input_type: holding
+        data_type: uint32
+        scan_interval: 600
+        # wb user defined charge start time  unit:
+
+      - name: Charger wb 33546
+        unique_id: ac_wb_33546
+        device_address: !secret sungrow_modbus_slave
+        address: 33546 # reg 33547
+        input_type: holding
+        data_type: uint32
+        scan_interval: 600
+        # wb unit:
+
+      - name: Charger wb user defined charge end time 
+        unique_id: ac_wb_user_defined_charge_end_time_
+        device_address: !secret sungrow_modbus_slave
+        address: 33547 # reg 33548
+        input_type: holding
+        data_type: uint32
+        scan_interval: 600
+        # wb user defined charge end time  unit:
+
+      - name: Charger wb 33548
+        unique_id: ac_wb_33548
+        device_address: !secret sungrow_modbus_slave
+        address: 33548 # reg 33549
+        input_type: holding
+        data_type: uint32
+        scan_interval: 600
+        # wb unit:
+
+      - name: Charger wb surplus power from grid
+        unique_id: ac_wb_surplus_power_from_grid
+        device_address: !secret sungrow_modbus_slave
+        address: 33549 # reg 33550
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # wb surplus 170=powerFromGrid 85=noPowerFromGrid unit:
+
+      ###################################
+      # end holding registers of charger
+      ###################################
+
 # 'virtual' template sensors for better readability
 template:
   - binary_sensor:
