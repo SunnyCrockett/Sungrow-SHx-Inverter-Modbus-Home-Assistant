@@ -2021,13 +2021,13 @@ modbus:
         scan_interval: 600
         # wb unit:
 
-      - name: Charger wb surplus power from grid
-        unique_id: ac_wb_surplus_power_from_grid
+      - name: Charger wb surplus power from grid raw
+        unique_id: ac_wb_surplus_power_from_grid_raw
         device_address: !secret sungrow_modbus_slave
         address: 33549 # reg 33550
         input_type: holding
         data_type: uint16
-        scan_interval: 600
+        scan_interval: 60
         # wb surplus 170=powerFromGrid 85=noPowerFromGrid unit:
 
       ###################################
