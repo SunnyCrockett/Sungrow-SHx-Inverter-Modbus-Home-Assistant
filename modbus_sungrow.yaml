@@ -3499,10 +3499,10 @@ automation:
           slave: !secret sungrow_modbus_slave
           value: 170
       - delay:
-        hours: 0
-        minutes: 0
-        seconds: 10
-        milliseconds: 0
+          hours: 0
+          minutes: 0
+          seconds: 10
+          milliseconds: 0
       - service: homeassistant.update_entity
         data: {}
         target:
@@ -3529,10 +3529,10 @@ automation:
           slave: !secret sungrow_modbus_slave
           value: 85
       - delay:
-        hours: 0
-        minutes: 0
-        seconds: 10
-        milliseconds: 0
+          hours: 0
+          minutes: 0
+          seconds: 10
+          milliseconds: 0
       - service: homeassistant.update_entity
         data: {}
         target:
