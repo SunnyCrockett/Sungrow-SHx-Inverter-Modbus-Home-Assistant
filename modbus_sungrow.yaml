@@ -2832,6 +2832,11 @@ input_select:
       - "Enabled"
       - "Shutdown"
 
+input_boolean:
+  ac_wb_surplus_power_from_grid:
+    name: Surplus charging - power from grid
+    icon: mdi:transmission-tower-export
+
   # get input for battery mode (forced charge/discharge, stop (default) )
   set_sg_ems_mode:
     name: EMS mode
@@ -3441,6 +3446,83 @@ automation:
 #                state: 'off'
 #            sequence:
 #              - service: script.sg_self_consumption_mode
+
+###################################
+# automations of charger
+###################################
+
+  - id: 'automation_ac_wb_surplus_power_from_grid_toggle_input'
+    alias: toggle input for charger surplus power from grid
+    description: ''
+    trigger:
+    - platform: homeassistant
+      event: start
+    - platform: state
+      entity_id:
+      - sensor.charger_wb_surplus_power_from_grid_raw
+    condition: []
+    action:
+    - if:
+      - condition: state
+        entity_id: sensor.charger_wb_surplus_power_from_grid_raw
+        state: '170'
+      then:
+      - service: input_boolean.turn_on
+        data: {}
+        target:
+          entity_id: input_boolean.ac_wb_surplus_power_from_grid
+      else:
+      - service: input_boolean.turn_off
+        data: {}
+        target:
+          entity_id: input_boolean.ac_wb_surplus_power_from_grid
+    mode: single
+
+  - id: 'automation_ac_wb_surplus_power_from_grid_set_power_from_grid'
+    alias: enable power from grid for charger surplus mode
+    description: ''
+    trigger:
+    - platform: state
+      entity_id:
+      - input_boolean.ac_wb_surplus_power_from_grid
+      to: 'on'
+    condition:
+    - condition: state
+      entity_id: sensor.charger_wb_surplus_power_from_grid_raw
+      state: '85'
+    action:
+      - service: modbus.write_register
+        data:
+          hub: SungrowSHx
+          address: 33549 # reg 33550
+          slave: !secret sungrow_modbus_slave
+          value: 170
+    mode: single
+
+  - id: 'automation_ac_wb_surplus_power_from_grid_set_no_power_from_grid'
+    alias: disable power from grid for charger surplus mode
+    description: ''
+    trigger:
+    - platform: state
+      entity_id:
+      - input_boolean.ac_wb_surplus_power_from_grid
+      to: 'off'
+    condition:
+    - condition: state
+      entity_id: sensor.charger_wb_surplus_power_from_grid_raw
+      state: '170'
+    action:
+      - service: modbus.write_register
+        data:
+          hub: SungrowSHx
+          address: 33549 # reg 33550
+          slave: !secret sungrow_modbus_slave
+          value: 85
+    mode: single
+
+###################################
+# end of automations of charger
+###################################
 
 script:
     sg_set_forced_discharge_battery_mode:
