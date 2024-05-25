@@ -2832,11 +2832,6 @@ input_select:
       - "Enabled"
       - "Shutdown"
 
-input_boolean:
-  ac_wb_surplus_power_from_grid:
-    name: Surplus charging - power from grid
-    icon: mdi:transmission-tower-export
-
   # get input for battery mode (forced charge/discharge, stop (default) )
   set_sg_ems_mode:
     name: EMS mode
@@ -2870,6 +2865,11 @@ input_boolean:
       - "Enabled"
       - "Disabled"
     icon: mdi:export
+
+input_boolean:
+  ac_wb_surplus_power_from_grid:
+    name: Surplus charging - power from grid
+    icon: mdi:transmission-tower-export
 
 # Automations: Write modbus registers on input changes via GUI
 # note: If you change a value by the sliders, it will take up to 60 seconds until the state variables are updated
