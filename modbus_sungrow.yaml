@@ -2866,6 +2866,7 @@ input_select:
       - "Disabled"
     icon: mdi:export
 
+# charger
 input_boolean:
   ac_wb_surplus_power_from_grid:
     name: Surplus charging - power from grid
