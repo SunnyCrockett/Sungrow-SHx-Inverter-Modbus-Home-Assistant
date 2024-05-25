@@ -3499,14 +3499,14 @@ automation:
           slave: !secret sungrow_modbus_slave
           value: 170
       - delay:
-	      hours: 0
-	      minutes: 0
-	      seconds: 10
-	      milliseconds: 0
+        hours: 0
+	minutes: 0
+        seconds: 10
+	milliseconds: 0
       - service: homeassistant.update_entity
-	      data: {}
-	      target:
-	        entity_id: sensor.charger_wb_surplus_power_from_grid_raw
+	data: {}
+	target:
+          entity_id: sensor.charger_wb_surplus_power_from_grid_raw
     mode: single
 
   - id: 'automation_ac_wb_surplus_power_from_grid_set_no_power_from_grid'
@@ -3529,14 +3529,14 @@ automation:
           slave: !secret sungrow_modbus_slave
           value: 85
       - delay:
-	      hours: 0
-	      minutes: 0
-	      seconds: 10
-	      milliseconds: 0
+        hours: 0
+	minutes: 0
+        seconds: 10
+	milliseconds: 0
       - service: homeassistant.update_entity
-	      data: {}
-	      target:
-	        entity_id: sensor.charger_wb_surplus_power_from_grid_raw
+	data: {}
+	target:
+          entity_id: sensor.charger_wb_surplus_power_from_grid_raw
     mode: single
 
 ###################################
