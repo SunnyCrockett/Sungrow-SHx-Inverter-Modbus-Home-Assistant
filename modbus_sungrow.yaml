@@ -1940,13 +1940,13 @@ modbus:
         scan_interval: 600
         # wb unit:
 
-      - name: Charger wb charging mode
-        unique_id: ac_wb_charging_mode
+      - name: Charger wb charging mode raw
+        unique_id: ac_wb_charging_mode_raw
         device_address: !secret sungrow_modbus_slave
         address: 33540 # reg 33541
         input_type: holding
         data_type: uint16
-        scan_interval: 600
+        scan_interval: 300
         # wb charging mode (160=fastCharge 161=pvSurplus 162=quantity&timeBased 163=userDefined) unit:
 
       - name: Charger wb charching quantity
@@ -2027,7 +2027,7 @@ modbus:
         address: 33549 # reg 33550
         input_type: holding
         data_type: uint16
-        scan_interval: 60
+        scan_interval: 300
         # wb surplus 170=powerFromGrid 85=noPowerFromGrid unit:
 
       ###################################
@@ -2769,6 +2769,25 @@ template:
             )|int 
           }}
 
+#charger templates
+
+      - name: Charging mode
+        unique_id: ac_wb_charging_mode
+        state: >-
+          {% if ((states('sensor.charger_wb_charging_mode_raw') | int(default=0))  == 160) %}
+            Fast charging
+          {% elif ((states('sensor.charger_wb_charging_mode_raw') | int(default=0))  == 161) %}
+            Surplus charging
+          {% elif ((states('sensor.charger_wb_charging_mode_raw') | int(default=0))  == 162) %}
+            Preset charging
+          {% elif ((states('sensor.charger_wb_charging_mode_raw') | int(default=0)) == 163) %}
+            Customized charging
+          {% else %}
+            Unknown charging mode!
+          {% endif %}
+
+#end charger templates
+
 # getting input for Min and Max SoC
 input_number:
   set_sg_min_soc:
@@ -2867,10 +2886,22 @@ input_select:
     icon: mdi:export
 
 # charger
+
+  set_ac_wb_charging_mode:
+    name: Charging mode
+    options:
+      - "Fast charging"
+      - "Surplus charging"
+      - "Preset charging"
+      - "Customized charging"
+    icon: mdi:ev-station
+
 input_boolean:
   ac_wb_surplus_power_from_grid:
     name: Surplus charging - power from grid
     icon: mdi:transmission-tower-export
+
+# charger end
 
 # Automations: Write modbus registers on input changes via GUI
 # note: If you change a value by the sliders, it will take up to 60 seconds until the state variables are updated
@@ -3451,6 +3482,66 @@ automation:
 ###################################
 # automations of charger
 ###################################
+
+  - id: "automation_sungrow_charger_wb_charging_mode"
+    alias: "sungrow charger wb charging mode"
+    description: "Set charger wb charging mode"
+    trigger:
+      - platform: state
+        entity_id:
+          - input_select.set_ac_wb_charging_mode
+    condition: []
+    variables:
+      fast_charging: 0xA0 #160 #Fast charging
+      surplus_charging: 0xA1 #161 #Surplus charging
+      preset_charging: 0xA2 #162 #Preset charging
+      customized_charging: 0xA3 #163 #Customized charging
+    action:
+      - service: modbus.write_register
+        data_template:
+          hub: SungrowSHx
+          slave: !secret sungrow_modbus_slave
+          address: 33540 # reg 33541
+          value: >
+            {% if is_state('input_select.set_ac_wb_charging_mode', "Fast charging") %} 
+              {{fast_charging}}
+            {% elif is_state('input_select.set_ac_wb_charging_mode', "Surplus charging") %} 
+              {{surplus_charging}}
+            {% elif is_state('input_select.set_ac_wb_charging_mode', "Preset charging") %} 
+              {{preset_charging}}
+            {% elif is_state('input_select.set_ac_wb_charging_mode', "Customized charging") %} 
+              {{customized_charging}}
+            {% endif %}
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 10
+          milliseconds: 0
+      - service: homeassistant.update_entity
+        data: {}
+        target:
+          entity_id: sensor.charger_wb_charging_mode_raw
+    mode: single
+
+  - id: "automation_sungrow_charger_wb_charging_mode_input_select_update"
+    alias: "sungrow charger wb_charging mode input select update"
+    description: "Updates Sungrow charger wb charging mode input select"
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: state
+        entity_id:
+          - sensor.charger_wb_charging_mode_raw
+    condition:
+      - condition: template
+        value_template: "{{ not is_state('sensor.charger_wb_charging_mode_raw', 'unavailable') }}"
+    action:
+      - service: input_select.select_option
+        target:
+          entity_id: input_select.set_ac_wb_charging_mode
+        data:
+          option: "{{ states('sensor.charging_mode') }}"
+    mode: single
 
   - id: 'automation_ac_wb_surplus_power_from_grid_toggle_input'
     alias: toggle input for charger surplus power from grid
