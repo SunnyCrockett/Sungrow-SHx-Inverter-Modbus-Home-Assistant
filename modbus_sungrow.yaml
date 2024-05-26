@@ -2897,7 +2897,7 @@ input_select:
     icon: mdi:ev-station
 
 input_boolean:
-  ac_wb_surplus_power_from_grid:
+  set_ac_wb_surplus_power_from_grid:
     name: Surplus charging - power from grid
     icon: mdi:transmission-tower-export
 
@@ -3543,7 +3543,7 @@ automation:
           option: "{{ states('sensor.charging_mode') }}"
     mode: single
 
-  - id: 'automation_ac_wb_surplus_power_from_grid_toggle_input'
+  - id: 'automation_set_ac_wb_surplus_power_from_grid_input_select_update'
     alias: toggle input for charger surplus power from grid
     description: ''
     trigger:
@@ -3562,12 +3562,12 @@ automation:
       - service: input_boolean.turn_on
         data: {}
         target:
-          entity_id: input_boolean.ac_wb_surplus_power_from_grid
+          entity_id: input_boolean.set_ac_wb_surplus_power_from_grid
       else:
       - service: input_boolean.turn_off
         data: {}
         target:
-          entity_id: input_boolean.ac_wb_surplus_power_from_grid
+          entity_id: input_boolean.set_ac_wb_surplus_power_from_grid
     mode: single
 
   - id: 'automation_ac_wb_surplus_power_from_grid_set_power_from_grid'
@@ -3576,7 +3576,7 @@ automation:
     trigger:
     - platform: state
       entity_id:
-      - input_boolean.ac_wb_surplus_power_from_grid
+      - input_boolean.set_ac_wb_surplus_power_from_grid
       to: 'on'
     condition:
     - condition: state
@@ -3606,7 +3606,7 @@ automation:
     trigger:
     - platform: state
       entity_id:
-      - input_boolean.ac_wb_surplus_power_from_grid
+      - input_boolean.set_ac_wb_surplus_power_from_grid
       to: 'off'
     condition:
     - condition: state
