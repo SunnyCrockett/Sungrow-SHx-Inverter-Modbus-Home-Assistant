@@ -1959,7 +1959,7 @@ modbus:
         unit_of_measurement: kWh
         scale: 0.1
         scan_interval: 300
-        # wb charching quantity (e.g. 12kwh = 120) unit:
+        # wb charging quantity (e.g. 12kwh = 120) unit:
 
       - name: Charger wb charging duration raw
         unique_id: ac_wb_charging_duration_raw
@@ -1968,8 +1968,8 @@ modbus:
         input_type: holding
         data_type: uint32
         swap: word
-        scan_interval: 300
-        # wb charching duration unit:
+        scan_interval: 60
+        # wb charging duration unit:
 
       - name: Charger wb 33543
         unique_id: ac_wb_33543
@@ -1988,7 +1988,7 @@ modbus:
         input_type: holding
         data_type: uint16
         scan_interval: 300
-        # wb user defined charching (eg. 10A = 100) unit:
+        # wb user defined charging (eg. 10A = 100) unit:
 
       - name: Charger wb user defined charge start time raw
         unique_id: ac_wb_user_defined_charge_start_time_raw
@@ -2896,6 +2896,7 @@ input_number:
     max: 200
     step: 1
     mode: box
+    initial: 200
 
 #end if charger input_number
 
@@ -2966,6 +2967,25 @@ input_boolean:
   set_ac_wb_surplus_power_from_grid:
     name: Surplus charging - power from grid
     icon: mdi:transmission-tower-export
+
+input_datetime:
+  set_ac_wb_charging_duration:
+    name: Charger charging duration picker
+    has_date: true
+    has_time: true
+    icon: mdi:timelapse
+
+  set_ac_wb_user_defined_charge_start_time:
+    name: Charger user defined charge start time picker
+    has_date: true
+    has_time: true
+    icon: mdi:clock-start
+
+  set_ac_wb_user_defined_charge_end_time:
+    name: Charger user defined charge end time picker
+    has_date: true
+    has_time: true
+    icon: mdi:clock-end
 
 # charger end
 
@@ -3621,7 +3641,7 @@ automation:
         event: start
       - platform: state
         entity_id:
-          - sensor.charger_wb_charching_power_user_defined_charge_raw
+          - sensor.charger_wb_charging_power_user_defined_charge_raw
     condition:
       - condition: template
         value_template: "{{ not is_state('sensor.charger_wb_charging_power_user_defined_charge_raw', 'unavailable') }}"
@@ -3631,6 +3651,93 @@ automation:
           entity_id: input_select.set_ac_wb_charging_power_user_defined_charge
         data:
           option: "{{ states('sensor.charging_power_user_defined_charge') }}"
+    mode: single
+
+  - id: "automation_sungrow_charger_wb_charging_duration_input_datetime_update"
+    alias: "sungrow charger wb charging duration input datetime update"
+    description: "Updates Sungrow charger wb charging duration input datetime"
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: state
+        entity_id:
+          - sensor.charger_wb_charging_duration_raw
+    condition:
+      - condition: template
+        value_template: "{{ not is_state('sensor.charger_wb_charging_duration_raw', 'unavailable') }}"
+    action:
+      - service: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.set_ac_wb_charging_duration
+        data:
+          datetime: "{{ as_datetime(states.sensor.charger_wb_charging_duration_raw.state).date() }} {{ as_datetime(states.sensor.charger_wb_charging_duration_raw.state).time() }}"
+    mode: single
+
+  - id: 'automation_set_sungrow_charger_wb_charging_duration'
+    alias: set sungrow charger wb charging duration
+    description: ''
+    trigger:
+    - platform: state
+      entity_id:
+      - input_datetime.set_ac_wb_charging_duration
+    condition: []
+    action:
+      - service: modbus.write_register
+        data_template:
+          hub: SungrowSHx
+          address: 33542 # reg 33543
+          slave: !secret sungrow_modbus_slave
+          value: >
+            {{ as_timestamp(states('input_datetime.set_ac_wb_charging_duration')+"+00:00") | int }}
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 10
+          milliseconds: 0
+      - service: homeassistant.update_entity
+        data: {}
+        target:
+          entity_id: sensor.charger_wb_charging_duration_raw
+    mode: single
+
+  - id: "automation_sungrow_charger_wb_user_defined_charge_start_time_input_datetime_update"
+    alias: "sungrow charger wb user defined charge start time input datetime update"
+    description: "Updates Sungrow charger wb user defined charge start time input datetime"
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: state
+        entity_id:
+          - sensor.charger_wb_user_defined_charge_start_time_raw
+    condition:
+      - condition: template
+        value_template: "{{ not is_state('sensor.charger_wb_user_defined_charge_start_time_raw', 'unavailable') }}"
+    action:
+      - service: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.set_ac_wb_user_defined_charge_start_time
+        data:
+          datetime: "{{ as_datetime(states.sensor.charger_wb_user_defined_charge_start_time_raw.state).date() }} {{ as_datetime(states.sensor.charger_wb_user_defined_charge_start_time_raw.state).time() }}"
+    mode: single
+
+  - id: "automation_sungrow_charger_wb_user_defined_charge_end_time_input_datetime_update"
+    alias: "sungrow charger wb user defined charge end time input datetime update"
+    description: "Updates Sungrow charger wb user defined charge end time input datetime"
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: state
+        entity_id:
+          - sensor.charger_wb_user_defined_charge_end_time_raw
+    condition:
+      - condition: template
+        value_template: "{{ not is_state('sensor.charger_wb_user_defined_charge_end_time_raw', 'unavailable') }}"
+    action:
+      - service: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.set_ac_wb_user_defined_charge_end_time
+        data:
+          datetime: "{{ as_datetime(states.sensor.charger_wb_user_defined_charge_end_time_raw.state).date() }} {{ as_datetime(states.sensor.charger_wb_user_defined_charge_end_time_raw.state).time() }}"
     mode: single
 
   - id: "automation_sungrow_charger_wb_charging_mode"
