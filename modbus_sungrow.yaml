@@ -1949,22 +1949,26 @@ modbus:
         scan_interval: 300
         # wb charging mode (160=fastCharge 161=pvSurplus 162=quantity&timeBased 163=userDefined) unit:
 
-      - name: Charger wb charching quantity
-        unique_id: ac_wb_charching_quantity
+      - name: Charger wb charging quantity
+        unique_id: ac_wb_charging_quantity
         device_address: !secret sungrow_modbus_slave
         address: 33541 # reg 33542
         input_type: holding
         data_type: uint16
-        scan_interval: 600
+        precision: 1
+        unit_of_measurement: kWh
+        scale: 0.1
+        scan_interval: 300
         # wb charching quantity (e.g. 12kwh = 120) unit:
 
-      - name: Charger wb charching duration
-        unique_id: ac_wb_charching_duration
+      - name: Charger wb charging duration raw
+        unique_id: ac_wb_charging_duration_raw
         device_address: !secret sungrow_modbus_slave
         address: 33542 # reg 33543
         input_type: holding
         data_type: uint32
-        scan_interval: 600
+        swap: word
+        scan_interval: 300
         # wb charching duration unit:
 
       - name: Charger wb 33543
@@ -1973,25 +1977,27 @@ modbus:
         address: 33543 # reg 33544
         input_type: holding
         data_type: uint32
-        scan_interval: 600
+        swap: word
+        scan_interval: 60
         # wb unit:
 
-      - name: Charger wb charching power user defined charge
-        unique_id: ac_wb_charching_power_user_defined_charge
+      - name: Charger wb charging power user defined charge raw
+        unique_id: ac_wb_charging_power_user_defined_charge_raw
         device_address: !secret sungrow_modbus_slave
         address: 33544 # reg 33545
         input_type: holding
         data_type: uint16
-        scan_interval: 600
+        scan_interval: 300
         # wb user defined charching (eg. 10A = 100) unit:
 
-      - name: Charger wb user defined charge start time
-        unique_id: ac_wb_user_defined_charge_start_time
+      - name: Charger wb user defined charge start time raw
+        unique_id: ac_wb_user_defined_charge_start_time_raw
         device_address: !secret sungrow_modbus_slave
         address: 33545 # reg 33546
         input_type: holding
         data_type: uint32
-        scan_interval: 600
+        swap: word
+        scan_interval: 60
         # wb user defined charge start time  unit:
 
       - name: Charger wb 33546
@@ -2000,16 +2006,18 @@ modbus:
         address: 33546 # reg 33547
         input_type: holding
         data_type: uint32
-        scan_interval: 600
+        swap: word
+        scan_interval: 60
         # wb unit:
 
-      - name: Charger wb user defined charge end time 
-        unique_id: ac_wb_user_defined_charge_end_time_
+      - name: Charger wb user defined charge end time raw
+        unique_id: ac_wb_user_defined_charge_end_time_raw
         device_address: !secret sungrow_modbus_slave
         address: 33547 # reg 33548
         input_type: holding
         data_type: uint32
-        scan_interval: 600
+        swap: word
+        scan_interval: 60
         # wb user defined charge end time  unit:
 
       - name: Charger wb 33548
@@ -2018,6 +2026,7 @@ modbus:
         address: 33548 # reg 33549
         input_type: holding
         data_type: uint32
+        swap: word
         scan_interval: 600
         # wb unit:
 
@@ -2786,6 +2795,41 @@ template:
             Unknown charging mode!
           {% endif %}
 
+      - name: Charging power user defined charge
+        unique_id: ac_wb_charging_power_user_defined_charge
+        state: >-
+          {% if ((states('sensor.charger_wb_charging_power_user_defined_charge_raw') | int(default=0))  == 160) %}
+            16A 11kW
+          {% elif ((states('sensor.charger_wb_charging_power_user_defined_charge_raw') | int(default=0))  == 140) %}
+            14A 9,66kW
+          {% elif ((states('sensor.charger_wb_charging_power_user_defined_charge_raw') | int(default=0))  == 120) %}
+            12A 8,28kW
+          {% elif ((states('sensor.charger_wb_charging_power_user_defined_charge_raw') | int(default=0)) == 100) %}
+            10A 6,9kW
+          {% elif ((states('sensor.charger_wb_charging_power_user_defined_charge_raw') | int(default=0))  == 80) %}
+            8A 5,52kW
+          {% elif ((states('sensor.charger_wb_charging_power_user_defined_charge_raw') | int(default=0)) == 60) %}
+            6A 4,14kW
+          {% else %}
+            Unknown power user defined charge!
+          {% endif %}
+
+      - name: Charger user defined charge start time
+        unique_id: charger_wb_user_defined_charge_start_time
+        state: >
+          {{ as_datetime(states.sensor.charger_wb_user_defined_charge_start_time_raw.state).strftime("%d.%m.%Y %H:%M") }}
+
+      - name: Charger user defined charge end time
+        unique_id: charger_wb_user_defined_charge_end_time
+        state: >
+          {{ as_datetime(states.sensor.charger_wb_user_defined_charge_end_time_raw.state).strftime("%d.%m.%Y %H:%M") }}
+
+      - name: Charger charging duration
+        unique_id: charger_wb_charging_duration
+        state: >
+          {{ as_datetime(states.sensor.charger_wb_charging_duration_raw.state).strftime("%d.%m.%Y %H:%M") }}
+
+
 #end charger templates
 
 # getting input for Min and Max SoC
@@ -2844,6 +2888,17 @@ input_number:
     max: 10500 # Note: max for SH10.RT. It would be ncie to have this as a global variable /secret
     step: 100
 
+#charger input_number
+
+  set_ac_wb_charging_quantity:
+    name: Set charger charging quantity
+    min: 1
+    max: 200
+    step: 1
+    mode: box
+
+#end if charger input_number
+
 input_select:
   set_sg_inverter_run_mode:
     name: Inverter mode
@@ -2895,6 +2950,17 @@ input_select:
       - "Preset charging"
       - "Customized charging"
     icon: mdi:ev-station
+
+  set_ac_wb_charging_power_user_defined_charge:
+    name: Charging power user defined charge
+    options:
+      - "16A 11kW"
+      - "14A 9,66kW"
+      - "12A 8,28kW"
+      - "10A 6,9kW"
+      - "8A 5,52kW"
+      - "6A 4,14kW"
+    icon: mdi:arrow-up-down-bold
 
 input_boolean:
   set_ac_wb_surplus_power_from_grid:
@@ -3482,6 +3548,90 @@ automation:
 ###################################
 # automations of charger
 ###################################
+
+  - id: "automation_sungrow_charger_wb_charging_quantity"
+    alias: "charger charging quantity"
+    description: "Sets charger charging quantity"
+    trigger:
+      - platform: state
+        entity_id:
+          - input_number.set_ac_wb_charging_quantity
+    action:
+      - service: modbus.write_register
+        data_template:
+          hub: SungrowSHx
+          slave: !secret sungrow_modbus_slave
+          address: 33541 # reg 33542
+          value: "{{ states('input_number.set_ac_wb_charging_quantity') | int * 10 }}"
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 10
+          milliseconds: 0
+      - service: homeassistant.update_entity
+        data: {}
+        target:
+          entity_id: sensor.charger_wb_charging_quantity
+    mode: single
+
+  - id: "automation_sungrow_charger_wb_charging_power_user_defined_charge"
+    alias: "sungrow charger wb power user defined charge"
+    description: "Set charger wb wb power user defined charge"
+    trigger:
+      - platform: state
+        entity_id:
+          - input_select.set_ac_wb_charging_power_user_defined_charge
+    condition: []
+    action:
+      - service: modbus.write_register
+        data_template:
+          hub: SungrowSHx
+          slave: !secret sungrow_modbus_slave
+          address: 33544 # reg 33545
+          value: >
+            {% if is_state('input_select.set_ac_wb_charging_power_user_defined_charge', "16A 11kW") %} 
+              160
+            {% elif is_state('input_select.set_ac_wb_charging_power_user_defined_charge', "14A 9,66kW") %} 
+              140
+            {% elif is_state('input_select.set_ac_wb_charging_power_user_defined_charge', "12A 8,28kW") %} 
+              120
+            {% elif is_state('input_select.set_ac_wb_charging_power_user_defined_charge', "10A 6,9kW") %} 
+              100
+            {% elif is_state('input_select.set_ac_wb_charging_power_user_defined_charge', "8A 5,52kW") %} 
+              80
+            {% elif is_state('input_select.set_ac_wb_charging_power_user_defined_charge', "6A 4,14kW") %} 
+              60
+            {% endif %}
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 10
+          milliseconds: 0
+      - service: homeassistant.update_entity
+        data: {}
+        target:
+          entity_id: sensor.charger_wb_charging_power_user_defined_charge_raw
+    mode: single
+
+  - id: "automation_sungrow_charger_wb_charging_power_user_defined_charge_input_select_update"
+    alias: "sungrow charger wb power user defined charge input select update"
+    description: "Updates Sungrow charger wb power user defined charge input select"
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: state
+        entity_id:
+          - sensor.charger_wb_charching_power_user_defined_charge_raw
+    condition:
+      - condition: template
+        value_template: "{{ not is_state('sensor.charger_wb_charging_power_user_defined_charge_raw', 'unavailable') }}"
+    action:
+      - service: input_select.select_option
+        target:
+          entity_id: input_select.set_ac_wb_charging_power_user_defined_charge
+        data:
+          option: "{{ states('sensor.charging_power_user_defined_charge') }}"
+    mode: single
 
   - id: "automation_sungrow_charger_wb_charging_mode"
     alias: "sungrow charger wb charging mode"
