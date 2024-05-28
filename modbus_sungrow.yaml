@@ -3688,7 +3688,8 @@ automation:
           address: 33542 # reg 33543
           slave: !secret sungrow_modbus_slave
           value: >
-            {{ as_timestamp(states('input_datetime.set_ac_wb_charging_duration')+"+00:00") | int }}
+            {% set hexTimestamp = '%0x' % as_timestamp(states('input_datetime.set_ac_wb_charging_duration')+"+00:00") | int %}
+            [0x{{ hexTimestamp[4:] }}, 0x{{ hexTimestamp[:4] }}]
       - delay:
           hours: 0
           minutes: 0
