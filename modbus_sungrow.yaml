@@ -2510,6 +2510,16 @@ template:
         state: >
           {{ states('sensor.charger_system_clock_year')}}-{{"%.2d" | format(states('sensor.charger_system_clock_month') | int)}}-{{"%.2d" | format(states('sensor.charger_system_clock_day') | int)}} {{"%.2d" | format(states('sensor.charger_system_clock_hour') | int)}}:{{"%.2d" | format(states('sensor.charger_system_clock_minute') | int) }}
 
+      - name: Charger wb surplus power from grid
+        unique_id: ac_wb_surplus_power_from_grid
+        state: >-
+          {% if is_state("sensor.charger_wb_surplus_power_from_grid_raw", "170") %}
+            On
+          {% elif is_state("sensor.charger_wb_surplus_power_from_grid_raw", "85") %}
+            Off
+          {% else %}
+            Unknown status {{ states("sensor.charger_wb_surplus_power_from_grid_raw") }}
+          {% endif %}
 
 #end charger templates
 
