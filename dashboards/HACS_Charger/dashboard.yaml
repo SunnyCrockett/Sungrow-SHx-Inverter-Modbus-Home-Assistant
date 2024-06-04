@@ -1,1 +1,49 @@
-
+views:
+  - title: Home
+    cards:
+      - type: entities
+        entities:
+          - entity: input_select.set_ac_wb_charging_mode
+          - entity: sensor.charging_mode
+          - entity: sensor.charger_system_datetime
+        title: Charger
+      - type: entities
+        entities:
+          - entity: input_boolean.set_ac_wb_surplus_power_from_grid
+          - entity: sensor.charger_wb_surplus_power_from_grid
+        title: Surplus charging
+      - type: entities
+        entities:
+          - entity: input_number.set_ac_wb_charging_quantity
+          - entity: sensor.charger_wb_charging_quantity
+          - entity: input_datetime.set_ac_wb_charging_duration
+          - entity: sensor.charger_charging_duration
+        title: Preset charging
+      - type: entities
+        entities:
+          - entity: input_datetime.set_ac_wb_customized_charge_start_time
+          - entity: sensor.charger_customized_charge_start_time
+          - entity: input_datetime.set_ac_wb_customized_charge_end_time
+          - entity: sensor.charger_customized_charge_end_time
+          - entity: input_select.set_ac_wb_charging_power_customized_charge
+          - entity: sensor.charging_power_customized_charge
+        title: Customized charging
+      - type: entities
+        entities:
+          - entity: sensor.ac_wb_unknown_33538
+          - entity: sensor.ac_wb_unknown_33539
+        title: '???'
+      - type: entities
+        entities:
+          - entity: sensor.charger_wb_surplus_power_from_grid_raw
+          - entity: sensor.charger_wb_charging_mode_raw
+          - entity: sensor.charger_wb_charging_power_customized_charge_raw
+          - entity: sensor.charger_wb_customized_charge_start_time_raw
+          - entity: sensor.charger_wb_customized_charge_end_time_raw
+          - entity: sensor.charger_wb_charging_duration_raw
+          - entity: sensor.charger_system_clock_year
+          - entity: sensor.charger_system_clock_month
+          - entity: sensor.charger_system_clock_day
+          - entity: sensor.charger_system_clock_hour
+          - entity: sensor.charger_system_clock_minute
+        title: Raw
