@@ -1615,13 +1615,14 @@ modbus:
         data_type: uint16
         scan_interval: 60
 
-      - name: ac wb Unknown 33539
-        unique_id: ac_wb_unknown_33539
+      - name: Charger wb charging enabled raw
+        unique_id: ac_wb_charging_enabled_raw
         device_address: !secret sungrow_modbus_slave
         address: 33539 # reg 33540
         input_type: holding
         data_type: uint16
         scan_interval: 60
+        # 85: disabled / 170: enabled
 
       - name: Charger wb charging mode raw
         unique_id: ac_wb_charging_mode_raw
@@ -2498,6 +2499,17 @@ template:
             Unknown status {{ states("sensor.charger_wb_surplus_power_from_grid_raw") }}
           {% endif %}
 
+      - name: Charger wb charging enabled
+        unique_id: ac_wb_charging_enabled
+        state: >-
+          {% if is_state("sensor.charger_wb_charging_enabled_raw", "170") %}
+            On
+          {% elif is_state("sensor.charger_wb_charging_enabled_raw", "85") %}
+            Off
+          {% else %}
+            Unknown status {{ states("sensor.charger_wb_charging_enabled_raw") }}
+          {% endif %}
+
 #end charger templates
 
 # getting input for Min and Max SoC
@@ -2566,7 +2578,20 @@ input_number:
     mode: box
     initial: 200
 
-#end if charger input_number
+#end of charger input_number
+
+#charger input_button
+
+input_button:
+  set_ac_wb_start_charging:
+    name: Start charging
+    icon: mdi:play
+
+  set_ac_wb_stop_charging:
+    name: Stop charging
+    icon: mdi:stop
+
+#end of charger input_button
 
 input_select:
   set_sg_inverter_run_mode:
@@ -3613,6 +3638,66 @@ automation:
         data: {}
         target:
           entity_id: sensor.charger_wb_surplus_power_from_grid_raw
+    mode: single
+
+  - id: "automation_ac_wb_start_charging"
+    alias: "start charging via inverter"
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - input_button.set_ac_wb_start_charging
+    condition: []
+    variables:
+      start_charging: 170
+      stop_charging: 85
+    action:
+      - service: modbus.write_register
+        data_template:
+          hub: SungrowSHx
+          slave: !secret sungrow_modbus_slave
+          address: 33539 # reg 33540
+          value: >
+              {{start_charging}}
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 10
+          milliseconds: 0
+      - service: homeassistant.update_entity
+        data: {}
+        target:
+          entity_id: sensor.charger_wb_charging_enabled_raw
+    mode: single
+
+  - id: "automation_ac_wb_stop_charging"
+    alias: "stop charging via inverter"
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - input_button.set_ac_wb_stop_charging
+    condition: []
+    variables:
+      start_charging: 170
+      stop_charging: 85
+    action:
+      - service: modbus.write_register
+        data_template:
+          hub: SungrowSHx
+          slave: !secret sungrow_modbus_slave
+          address: 33539 # reg 33540
+          value: >
+              {{stop_charging}}
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 10
+          milliseconds: 0
+      - service: homeassistant.update_entity
+        data: {}
+        target:
+          entity_id: sensor.charger_wb_charging_enabled_raw
     mode: single
 
 ###################################
