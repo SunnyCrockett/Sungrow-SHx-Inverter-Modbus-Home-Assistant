@@ -4,7 +4,7 @@ views:
       - type: custom:charger-card
         entity: sensor.charging_power
         brand: sungrow
-        show_leds: true
+        show_leds: false
         details:
           name:
             entity_id: sensor.wb1_dev_number_raw
@@ -256,14 +256,18 @@ views:
         show_toolbar: true
         show_name: true
         show_status: true
-        show_stats: true
+        show_stats: false
         show_collapsibles: true
       - type: entities
         entities:
+          - entity: input_button.wb_start_charging
+          - entity: input_button.wb_stop_charging
+          - entity: sensor.charging_status
           - entity: input_select.set_ac_wb_charging_mode
           - entity: sensor.charging_mode
-          - entity: sensor.charger_system_datetime
-        title: Charger
+          - entity: input_number.set_wb1_mileage_per_kwh
+          - entity: sensor.mileage_per_kwh
+        title: Charger settings
       - type: entities
         entities:
           - entity: input_boolean.set_ac_wb_surplus_power_from_grid
@@ -287,20 +291,22 @@ views:
         title: Customized charging
       - type: entities
         entities:
+          - entity: sensor.wb1_dev_number_raw
+          - entity: sensor.charger_system_datetime
+          - entity: sensor.total_energy
+        title: Infos
+      - type: entities
+        entities:
+          - entity: sensor.charging_energy
+          - entity: sensor.charging_duration
+          - entity: sensor.charged_range
+          - entity: sensor.charging_start_time
+          - entity: sensor.charging_end_time
+          - entity: sensor.charging_power
+          - entity: sensor.output_current_setting
+        title: Charging infos
+      - type: entities
+        entities:
           - entity: sensor.ac_wb_unknown_33538
           - entity: sensor.ac_wb_unknown_33539
         title: '???'
-      - type: entities
-        entities:
-          - entity: sensor.charger_wb_surplus_power_from_grid_raw
-          - entity: sensor.charger_wb_charging_mode_raw
-          - entity: sensor.charger_wb_charging_power_customized_charge_raw
-          - entity: sensor.charger_wb_customized_charge_start_time_raw
-          - entity: sensor.charger_wb_customized_charge_end_time_raw
-          - entity: sensor.charger_wb_charging_duration_raw
-          - entity: sensor.charger_system_clock_year
-          - entity: sensor.charger_system_clock_month
-          - entity: sensor.charger_system_clock_day
-          - entity: sensor.charger_system_clock_hour
-          - entity: sensor.charger_system_clock_minute
-        title: Raw
