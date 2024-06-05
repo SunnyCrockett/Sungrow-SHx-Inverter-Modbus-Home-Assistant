@@ -140,12 +140,12 @@ views:
             default:
               - service: input_button.press
                 service_data:
-                  entity_id: input_button.wb_start_charging
+                  entity_id: input_button.set_ac_wb_start_charging
                 text: Start charging
                 icon: mdi:play-speed
               - service: input_button.press
                 service_data:
-                  entity_id: input_button.wb_stop_charging
+                  entity_id: input_button.set_ac_wb_stop_charging
                 text: Stop charging
                 icon: hass:stop
             Available:
@@ -260,8 +260,9 @@ views:
         show_collapsibles: true
       - type: entities
         entities:
-          - entity: input_button.wb_start_charging
-          - entity: input_button.wb_stop_charging
+          - entity: input_button.set_ac_wb_start_charging
+          - entity: input_button.set_ac_wb_stop_charging
+          - entity: sensor.charger_wb_charging_enabled
           - entity: sensor.charging_status
           - entity: input_select.set_ac_wb_charging_mode
           - entity: sensor.charging_mode
@@ -308,5 +309,4 @@ views:
       - type: entities
         entities:
           - entity: sensor.ac_wb_unknown_33538
-          - entity: sensor.ac_wb_unknown_33539
         title: '???'
