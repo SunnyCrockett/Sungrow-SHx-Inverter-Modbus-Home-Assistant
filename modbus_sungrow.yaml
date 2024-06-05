@@ -1607,14 +1607,21 @@ modbus:
         scan_interval: 60
         # Systemzeit Minute unit:
 
-      - name: Charger wb 33530
-        unique_id: ac_wb_33530
+      - name: ac wb Unknown 33538
+        unique_id: ac_wb_unknown_33538
         device_address: !secret sungrow_modbus_slave
-        address: 33530 # reg 33531
+        address: 33538 # reg 33539
         input_type: holding
         data_type: uint16
-        scan_interval: 600
-        # wb unit:
+        scan_interval: 60
+
+      - name: ac wb Unknown 33539
+        unique_id: ac_wb_unknown_33539
+        device_address: !secret sungrow_modbus_slave
+        address: 33539 # reg 33540
+        input_type: holding
+        data_type: uint16
+        scan_interval: 60
 
       - name: Charger wb charging mode raw
         unique_id: ac_wb_charging_mode_raw
@@ -1623,7 +1630,7 @@ modbus:
         input_type: holding
         data_type: uint16
         scan_interval: 300
-        # wb charging mode (160=fastCharge 161=pvSurplus 162=quantity&timeBased 163=userDefined) unit:
+        # wb charging mode (160=fastCharge 161=surplusCharge 162=presetCharge 163=customizedCharge) unit:
 
       - name: Charger wb charging quantity
         unique_id: ac_wb_charging_quantity
@@ -1647,64 +1654,34 @@ modbus:
         scan_interval: 300
         # wb charging duration unit:
 
-      - name: Charger wb 33543
-        unique_id: ac_wb_33543
-        device_address: !secret sungrow_modbus_slave
-        address: 33543 # reg 33544
-        input_type: holding
-        data_type: uint32
-        swap: word
-        scan_interval: 60
-        # wb unit:
-
-      - name: Charger wb charging power user defined charge raw
-        unique_id: ac_wb_charging_power_user_defined_charge_raw
+      - name: Charger wb charging power customized charge raw
+        unique_id: ac_wb_charging_power_customized_charge_raw
         device_address: !secret sungrow_modbus_slave
         address: 33544 # reg 33545
         input_type: holding
         data_type: uint16
         scan_interval: 300
-        # wb user defined charging (eg. 10A = 100) unit:
+        # wb customized charging (eg. 10A = 100) unit:
 
-      - name: Charger wb user defined charge start time raw
-        unique_id: ac_wb_user_defined_charge_start_time_raw
+      - name: Charger wb customized charge start time raw
+        unique_id: ac_wb_customized_charge_start_time_raw
         device_address: !secret sungrow_modbus_slave
         address: 33545 # reg 33546
         input_type: holding
         data_type: uint32
         swap: word
         scan_interval: 300
-        # wb user defined charge start time  unit:
+        # wb customized start time  unit:
 
-      - name: Charger wb 33546
-        unique_id: ac_wb_33546
-        device_address: !secret sungrow_modbus_slave
-        address: 33546 # reg 33547
-        input_type: holding
-        data_type: uint32
-        swap: word
-        scan_interval: 60
-        # wb unit:
-
-      - name: Charger wb user defined charge end time raw
-        unique_id: ac_wb_user_defined_charge_end_time_raw
+      - name: Charger wb customized charge end time raw
+        unique_id: ac_wb_customized_charge_end_time_raw
         device_address: !secret sungrow_modbus_slave
         address: 33547 # reg 33548
         input_type: holding
         data_type: uint32
         swap: word
         scan_interval: 300
-        # wb user defined charge end time  unit:
-
-      - name: Charger wb 33548
-        unique_id: ac_wb_33548
-        device_address: !secret sungrow_modbus_slave
-        address: 33548 # reg 33549
-        input_type: holding
-        data_type: uint32
-        swap: word
-        scan_interval: 600
-        # wb unit:
+        # wb customized charge end time  unit:
 
       - name: Charger wb surplus power from grid raw
         unique_id: ac_wb_surplus_power_from_grid_raw
@@ -2471,34 +2448,34 @@ template:
             Unknown charging mode!
           {% endif %}
 
-      - name: Charging power user defined charge
-        unique_id: ac_wb_charging_power_user_defined_charge
+      - name: Charging power customized charge
+        unique_id: ac_wb_charging_power_customized_charge
         state: >-
-          {% if ((states('sensor.charger_wb_charging_power_user_defined_charge_raw') | int(default=0))  == 160) %}
+          {% if ((states('sensor.charger_wb_charging_power_customized_charge_raw') | int(default=0))  == 160) %}
             16A 11kW
-          {% elif ((states('sensor.charger_wb_charging_power_user_defined_charge_raw') | int(default=0))  == 140) %}
+          {% elif ((states('sensor.charger_wb_charging_power_customized_charge_raw') | int(default=0))  == 140) %}
             14A 9,66kW
-          {% elif ((states('sensor.charger_wb_charging_power_user_defined_charge_raw') | int(default=0))  == 120) %}
+          {% elif ((states('sensor.charger_wb_charging_power_customized_charge_raw') | int(default=0))  == 120) %}
             12A 8,28kW
-          {% elif ((states('sensor.charger_wb_charging_power_user_defined_charge_raw') | int(default=0)) == 100) %}
+          {% elif ((states('sensor.charger_wb_charging_power_customized_charge_raw') | int(default=0)) == 100) %}
             10A 6,9kW
-          {% elif ((states('sensor.charger_wb_charging_power_user_defined_charge_raw') | int(default=0))  == 80) %}
+          {% elif ((states('sensor.charger_wb_charging_power_customized_charge_raw') | int(default=0))  == 80) %}
             8A 5,52kW
-          {% elif ((states('sensor.charger_wb_charging_power_user_defined_charge_raw') | int(default=0)) == 60) %}
+          {% elif ((states('sensor.charger_wb_charging_power_customized_charge_raw') | int(default=0)) == 60) %}
             6A 4,14kW
           {% else %}
-            Unknown power user defined charge!
+            Unknown power for customized charge!
           {% endif %}
 
-      - name: Charger user defined charge start time
-        unique_id: charger_wb_user_defined_charge_start_time
+      - name: Charger customized charge start time
+        unique_id: charger_wb_customized_charge_start_time
         state: >
-          {{ as_datetime(states.sensor.charger_wb_user_defined_charge_start_time_raw.state).strftime("%d.%m.%Y %H:%M") }}
+          {{ as_datetime(states.sensor.charger_wb_customized_charge_start_time_raw.state).strftime("%d.%m.%Y %H:%M") }}
 
-      - name: Charger user defined charge end time
-        unique_id: charger_wb_user_defined_charge_end_time
+      - name: Charger customized charge end time
+        unique_id: charger_wb_customized_charge_end_time
         state: >
-          {{ as_datetime(states.sensor.charger_wb_user_defined_charge_end_time_raw.state).strftime("%d.%m.%Y %H:%M") }}
+          {{ as_datetime(states.sensor.charger_wb_customized_charge_end_time_raw.state).strftime("%d.%m.%Y %H:%M") }}
 
       - name: Charger charging duration
         unique_id: charger_wb_charging_duration
@@ -2643,8 +2620,8 @@ input_select:
       - "Customized charging"
     icon: mdi:ev-station
 
-  set_ac_wb_charging_power_user_defined_charge:
-    name: Charging power user defined charge
+  set_ac_wb_charging_power_customized_charge:
+    name: Charging power customized charge
     options:
       - "16A 11kW"
       - "14A 9,66kW"
@@ -2666,14 +2643,14 @@ input_datetime:
     has_time: true
     icon: mdi:timelapse
 
-  set_ac_wb_user_defined_charge_start_time:
-    name: Charger user defined charge start time picker
+  set_ac_wb_customized_charge_start_time:
+    name: Charger customized charge start time picker
     has_date: true
     has_time: true
     icon: mdi:clock-start
 
-  set_ac_wb_user_defined_charge_end_time:
-    name: Charger user defined charge end time picker
+  set_ac_wb_customized_charge_end_time:
+    name: Charger customized charge end time picker
     has_date: true
     has_time: true
     icon: mdi:clock-end
@@ -3285,13 +3262,13 @@ automation:
           entity_id: sensor.charger_wb_charging_quantity
     mode: single
 
-  - id: "automation_sungrow_charger_wb_charging_power_user_defined_charge"
-    alias: "sungrow charger wb power user defined charge"
-    description: "Set charger wb wb power user defined charge"
+  - id: "automation_sungrow_charger_wb_charging_power_customized_charge"
+    alias: "sungrow charger wb power customized charge"
+    description: "Set charger wb wb power customized charge"
     trigger:
       - platform: state
         entity_id:
-          - input_select.set_ac_wb_charging_power_user_defined_charge
+          - input_select.set_ac_wb_charging_power_customized_charge
     condition: []
     action:
       - service: modbus.write_register
@@ -3300,17 +3277,17 @@ automation:
           slave: !secret sungrow_modbus_slave
           address: 33544 # reg 33545
           value: >
-            {% if is_state('input_select.set_ac_wb_charging_power_user_defined_charge', "16A 11kW") %} 
+            {% if is_state('input_select.set_ac_wb_charging_power_customized_charge', "16A 11kW") %} 
               160
-            {% elif is_state('input_select.set_ac_wb_charging_power_user_defined_charge', "14A 9,66kW") %} 
+            {% elif is_state('input_select.set_ac_wb_charging_power_customized_charge', "14A 9,66kW") %} 
               140
-            {% elif is_state('input_select.set_ac_wb_charging_power_user_defined_charge', "12A 8,28kW") %} 
+            {% elif is_state('input_select.set_ac_wb_charging_power_customized_charge', "12A 8,28kW") %} 
               120
-            {% elif is_state('input_select.set_ac_wb_charging_power_user_defined_charge', "10A 6,9kW") %} 
+            {% elif is_state('input_select.set_ac_wb_charging_power_customized_charge', "10A 6,9kW") %} 
               100
-            {% elif is_state('input_select.set_ac_wb_charging_power_user_defined_charge', "8A 5,52kW") %} 
+            {% elif is_state('input_select.set_ac_wb_charging_power_customized_charge', "8A 5,52kW") %} 
               80
-            {% elif is_state('input_select.set_ac_wb_charging_power_user_defined_charge', "6A 4,14kW") %} 
+            {% elif is_state('input_select.set_ac_wb_charging_power_customized_charge', "6A 4,14kW") %} 
               60
             {% endif %}
       - delay:
@@ -3321,27 +3298,27 @@ automation:
       - service: homeassistant.update_entity
         data: {}
         target:
-          entity_id: sensor.charger_wb_charging_power_user_defined_charge_raw
+          entity_id: sensor.charger_wb_charging_power_customized_charge_raw
     mode: single
 
-  - id: "automation_sungrow_charger_wb_charging_power_user_defined_charge_input_select_update"
-    alias: "sungrow charger wb power user defined charge input select update"
-    description: "Updates Sungrow charger wb power user defined charge input select"
+  - id: "automation_sungrow_charger_wb_charging_power_customized_charge_input_select_update"
+    alias: "sungrow charger wb power customized charge input select update"
+    description: "Updates Sungrow charger wb power customized charge input select"
     trigger:
       - platform: homeassistant
         event: start
       - platform: state
         entity_id:
-          - sensor.charger_wb_charging_power_user_defined_charge_raw
+          - sensor.charger_wb_charging_power_customized_charge_raw
     condition:
       - condition: template
-        value_template: "{{ not is_state('sensor.charger_wb_charging_power_user_defined_charge_raw', 'unavailable') }}"
+        value_template: "{{ not is_state('sensor.charger_wb_charging_power_customized_charge_raw', 'unavailable') }}"
     action:
       - service: input_select.select_option
         target:
-          entity_id: input_select.set_ac_wb_charging_power_user_defined_charge
+          entity_id: input_select.set_ac_wb_charging_power_customized_charge
         data:
-          option: "{{ states('sensor.charging_power_user_defined_charge') }}"
+          option: "{{ states('sensor.charging_power_customized_charge') }}"
     mode: single
 
   - id: "automation_sungrow_charger_wb_charging_duration_input_datetime_update"
@@ -3393,33 +3370,33 @@ automation:
           entity_id: sensor.charger_wb_charging_duration_raw
     mode: single
 
-  - id: "automation_sungrow_charger_wb_user_defined_charge_start_time_input_datetime_update"
-    alias: "sungrow charger wb user defined charge start time input datetime update"
-    description: "Updates Sungrow charger wb user defined charge start time input datetime"
+  - id: "automation_sungrow_charger_wb_customized_charge_start_time_input_datetime_update"
+    alias: "sungrow charger wb customized charge start time input datetime update"
+    description: "Updates Sungrow charger wb customized charge start time input datetime"
     trigger:
       - platform: homeassistant
         event: start
       - platform: state
         entity_id:
-          - sensor.charger_wb_user_defined_charge_start_time_raw
+          - sensor.charger_wb_customized_charge_start_time_raw
     condition:
       - condition: template
-        value_template: "{{ not is_state('sensor.charger_wb_user_defined_charge_start_time_raw', 'unavailable') }}"
+        value_template: "{{ not is_state('sensor.charger_wb_customized_charge_start_time_raw', 'unavailable') }}"
     action:
       - service: input_datetime.set_datetime
         target:
-          entity_id: input_datetime.set_ac_wb_user_defined_charge_start_time
+          entity_id: input_datetime.set_ac_wb_customized_charge_start_time
         data:
-          datetime: "{{ as_datetime(states.sensor.charger_wb_user_defined_charge_start_time_raw.state).date() }} {{ as_datetime(states.sensor.charger_wb_user_defined_charge_start_time_raw.state).time() }}"
+          datetime: "{{ as_datetime(states.sensor.charger_wb_customized_charge_start_time_raw.state).date() }} {{ as_datetime(states.sensor.charger_wb_customized_charge_start_time_raw.state).time() }}"
     mode: single
 
-  - id: 'automation_set_sungrow_charger_wb_user_defined_charge_start_time'
-    alias: set sungrow charger wb user defined charge start time
+  - id: 'automation_set_sungrow_charger_wb_customized_charge_start_time'
+    alias: set sungrow charger wb customized charge start time
     description: ''
     trigger:
     - platform: state
       entity_id:
-      - input_datetime.set_ac_wb_user_defined_charge_start_time
+      - input_datetime.set_ac_wb_customized_charge_start_time
     condition:
       - condition: []
     action:
@@ -3429,7 +3406,7 @@ automation:
           address: 33545 # reg 33546
           slave: !secret sungrow_modbus_slave
           value: >
-            {% set hexTimestamp = '%0x' % as_timestamp(states('input_datetime.set_ac_wb_user_defined_charge_start_time')+"+00:00") | int %}
+            {% set hexTimestamp = '%0x' % as_timestamp(states('input_datetime.set_ac_wb_customized_charge_start_time')+"+00:00") | int %}
             [0x{{ hexTimestamp[4:] }}, 0x{{ hexTimestamp[:4] }}]
       - delay:
           hours: 0
@@ -3439,36 +3416,36 @@ automation:
       - service: homeassistant.update_entity
         data: {}
         target:
-          entity_id: sensor.charger_wb_user_defined_charge_start_time_raw
+          entity_id: sensor.charger_wb_customized_charge_start_time_raw
     mode: single
 
-  - id: "automation_sungrow_charger_wb_user_defined_charge_end_time_input_datetime_update"
-    alias: "sungrow charger wb user defined charge end time input datetime update"
-    description: "Updates Sungrow charger wb user defined charge end time input datetime"
+  - id: "automation_sungrow_charger_wb_customized_charge_end_time_input_datetime_update"
+    alias: "sungrow charger wb customized charge end time input datetime update"
+    description: "Updates Sungrow charger wb customized charge end time input datetime"
     trigger:
       - platform: homeassistant
         event: start
       - platform: state
         entity_id:
-          - sensor.charger_wb_user_defined_charge_end_time_raw
+          - sensor.charger_wb_customized_charge_end_time_raw
     condition:
       - condition: template
-        value_template: "{{ not is_state('sensor.charger_wb_user_defined_charge_end_time_raw', 'unavailable') }}"
+        value_template: "{{ not is_state('sensor.charger_wb_customized_charge_end_time_raw', 'unavailable') }}"
     action:
       - service: input_datetime.set_datetime
         target:
-          entity_id: input_datetime.set_ac_wb_user_defined_charge_end_time
+          entity_id: input_datetime.set_ac_wb_customized_charge_end_time
         data:
-          datetime: "{{ as_datetime(states.sensor.charger_wb_user_defined_charge_end_time_raw.state).date() }} {{ as_datetime(states.sensor.charger_wb_user_defined_charge_end_time_raw.state).time() }}"
+          datetime: "{{ as_datetime(states.sensor.charger_wb_customized_charge_end_time_raw.state).date() }} {{ as_datetime(states.sensor.charger_wb_customized_charge_end_time_raw.state).time() }}"
     mode: single
 
-  - id: 'automation_set_sungrow_charger_wb_user_defined_charge_end_time'
-    alias: set sungrow charger wb user defined charge end time
+  - id: 'automation_set_sungrow_charger_wb_customized_charge_end_time'
+    alias: set sungrow charger wb customized charge end time
     description: ''
     trigger:
     - platform: state
       entity_id:
-      - input_datetime.set_ac_wb_user_defined_charge_end_time
+      - input_datetime.set_ac_wb_customized_charge_end_time
     condition:
       - condition: []
     action:
@@ -3478,7 +3455,7 @@ automation:
           address: 33547 # reg 33548
           slave: !secret sungrow_modbus_slave
           value: >
-            {% set hexTimestamp = '%0x' % as_timestamp(states('input_datetime.set_ac_wb_user_defined_charge_end_time')+"+00:00") | int %}
+            {% set hexTimestamp = '%0x' % as_timestamp(states('input_datetime.set_ac_wb_customized_charge_end_time')+"+00:00") | int %}
             [0x{{ hexTimestamp[4:] }}, 0x{{ hexTimestamp[:4] }}]
       - delay:
           hours: 0
@@ -3488,7 +3465,7 @@ automation:
       - service: homeassistant.update_entity
         data: {}
         target:
-          entity_id: sensor.charger_wb_user_defined_charge_end_time_raw
+          entity_id: sensor.charger_wb_customized_charge_end_time_raw
     mode: single
 
   - id: "automation_sungrow_charger_wb_charging_mode"
