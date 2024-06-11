@@ -1,5 +1,5 @@
 views:
-  - title: Home
+  - title: Overview
     cards:
       - type: custom:charger-card
         entity: sensor.charging_power
@@ -292,12 +292,6 @@ views:
         title: Customized charging
       - type: entities
         entities:
-          - entity: sensor.wb1_dev_number_raw
-          - entity: sensor.charger_system_datetime
-          - entity: sensor.total_energy
-        title: Infos
-      - type: entities
-        entities:
           - entity: sensor.charging_energy
           - entity: sensor.charging_duration
           - entity: sensor.charged_range
@@ -306,6 +300,48 @@ views:
           - entity: sensor.charging_power
           - entity: sensor.output_current_setting
         title: Charging infos
+    icon: mdi:ev-plug-type2
+  - title: Advanced
+    path: advanced
+    icon: mdi:car-cog
+    cards:
+      - type: entities
+        entities:
+          - entity: sensor.wb1_dev_number_raw
+          - entity: sensor.total_energy
+          - entity: sensor.minimum_charging_power
+          - entity: sensor.maximum_charging_power
+          - entity: sensor.power_phases
+          - entity: sensor.rated_voltage
+          - entity: sensor.charger_system_datetime
+        title: Infos
+      - type: entities
+        entities:
+          - entity: input_select.set_wb_charger_enable
+          - entity: sensor.charger_enable
+          - entity: input_select.set_wb_phase_switch
+          - entity: sensor.phase_switching_status
+          - entity: input_number.set_wb1_output_current
+          - entity: sensor.output_current_setting
+          - entity: input_select.set_wb_working_mode
+          - entity: sensor.wallbox_working_mode
+          - entity: input_button.wb_start_charging
+            name: Start charging (charger)
+          - entity: input_button.wb_stop_charging
+            name: Stop charging (charger)
+          - entity: sensor.start_mode
+        title: Advanced settings
+        show_header_toggle: false
+      - type: entities
+        entities:
+          - entity: sensor.phase_a_charging_current
+          - entity: sensor.phase_a_charging_voltage
+          - entity: sensor.phase_b_charging_current
+          - entity: sensor.phase_b_charging_voltage
+          - entity: sensor.phase_c_charging_current
+          - entity: sensor.phase_c_charging_voltage
+          - entity: sensor.rated_voltage
+        title: Charging details
       - type: entities
         entities:
           - entity: sensor.ac_wb_unknown_33538
