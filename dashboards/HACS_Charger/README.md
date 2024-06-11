@@ -3,7 +3,8 @@
 1. Install the the following integrations:
 - https://github.com/tmjo/charger-card
 - https://github.com/Louisbertelsmann/Sungrow-Wallbox-Modbus-HomeAssistant
-
+2. Replace your modbus_sungrow.yaml with the following:
+- https://github.com/SunnyCrockett/Sungrow-SHx-Inverter-Modbus-Home-Assistant/blob/main/modbus_sungrow.yaml
 3. Copy sungrow_wb_bl.png to folder www
 
 4. Create a new dashboard, e.g. called "Charger":
@@ -24,7 +25,8 @@ Open Dashboard and paste the content of the provided dashboard.yaml file
 
 # Screenshots
 
-![image](https://github.com/SunnyCrockett/Sungrow-SHx-Inverter-Modbus-Home-Assistant/assets/153714968/c0dce4d9-edb1-4da1-92bf-d5e2ff4f725a)
-![image](https://github.com/SunnyCrockett/Sungrow-SHx-Inverter-Modbus-Home-Assistant/assets/153714968/83b48872-0994-43e3-ba53-e84f86b709a3)
+![image](https://github.com/SunnyCrockett/Sungrow-SHx-Inverter-Modbus-Home-Assistant/assets/153714968/b26d6294-b2c3-4ebc-8143-c5c648ad14a9)
+
+![image](https://github.com/SunnyCrockett/Sungrow-SHx-Inverter-Modbus-Home-Assistant/assets/153714968/e9dc2012-ad9d-405d-8647-6f1e94e977f3)
 
 by [SunnyCrockett](https://github.com/SunnyCrockett)
