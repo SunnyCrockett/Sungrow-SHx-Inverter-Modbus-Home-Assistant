@@ -15,7 +15,7 @@
 --> A new dashboard with the Name "Charger" was created
 
 Open Dashboard and paste the content of the provided dashboard.yaml file
-- Open the newly creadet dashboard "Charger" (left side of HA)
+- Open the newly created dashboard "Charger" (left side of HA)
 - Click on the "three dots" on the top right corner and select "Edit Dashboard"
 - Move the slider and start with an empty dashboard
 - Click "Take Control"
