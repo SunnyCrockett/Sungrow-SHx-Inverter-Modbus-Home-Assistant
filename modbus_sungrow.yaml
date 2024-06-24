@@ -3728,6 +3728,9 @@ automation:
       - condition: state
         state: "170"
         entity_id: sensor.charger_wb_charging_enabled_raw
+      - condition: state
+        state: "161"
+        entity_id: sensor.charger_wb_charging_mode_raw
     action:
       - service: automation.trigger
         target:
