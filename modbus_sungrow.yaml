@@ -3722,7 +3722,7 @@ automation:
     condition:
       - condition: template
         value_template: >-
-          {{ states('sensor.charger_wb_charging_enabled_raw') | int != 85 }}
+          {{ states('sensor.charger_wb_charging_enabled_raw') | int != start_charging }}
     variables:
       start_charging: 170
       stop_charging: 85
