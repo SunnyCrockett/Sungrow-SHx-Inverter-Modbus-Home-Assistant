@@ -3323,6 +3323,26 @@ automation:
           entity_id: sensor.charger_wb_charging_quantity
     mode: single
 
+  - id: "automation_sungrow_charger_wb_charging_quantity_input_number_update"
+    alias: "charger charging quantity update"
+    description: "Sets charger charging quantity"
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: state
+        entity_id:
+          - sensor.charger_wb_charging_quantity
+    condition:
+      - condition: template
+        value_template: "{{ not is_state('sensor.charger_wb_charging_quantity', 'unavailable') }}"
+    action:
+      - service: input_number.set_value
+        target:
+          entity_id: input_number.set_ac_wb_charging_quantity
+        data:
+          value: "{{ states('sensor.charger_wb_charging_quantity') }}"
+    mode: single
+
   - id: "automation_sungrow_charger_wb_charging_power_customized_charge"
     alias: "sungrow charger wb power customized charge"
     description: "Set charger wb wb power customized charge"
