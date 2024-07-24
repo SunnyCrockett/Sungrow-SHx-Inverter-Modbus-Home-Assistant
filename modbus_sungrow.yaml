@@ -3437,7 +3437,9 @@ automation:
         entity_id:
         - input_datetime.set_ac_wb_charging_duration
     condition:
-      - condition: []
+      - condition: template
+        value_template: >-
+          {{ as_datetime(states.input_datetime.set_ac_wb_charging_duration.state).strftime("%d.%m.%Y %H:%M") != as_datetime(states.sensor.charger_wb_charging_duration_raw.state).strftime("%d.%m.%Y %H:%M") }}
     action:
       - service: modbus.write_register
         data_template:
@@ -3486,7 +3488,9 @@ automation:
       entity_id:
       - input_datetime.set_ac_wb_customized_charge_start_time
     condition:
-      - condition: []
+      - condition: template
+        value_template: >-
+          {{ as_datetime(states.input_datetime.set_ac_wb_customized_charge_start_time.state).strftime("%d.%m.%Y %H:%M") != as_datetime(states.sensor.charger_wb_customized_charge_start_time_raw.state).strftime("%d.%m.%Y %H:%M") }}
     action:
       - service: modbus.write_register
         data_template:
@@ -3535,7 +3539,9 @@ automation:
       entity_id:
       - input_datetime.set_ac_wb_customized_charge_end_time
     condition:
-      - condition: []
+      - condition: template
+        value_template: >-
+          {{ as_datetime(states.input_datetime.set_ac_wb_customized_charge_end_time.state).strftime("%d.%m.%Y %H:%M") != as_datetime(states.sensor.charger_wb_customized_charge_end_time_raw.state).strftime("%d.%m.%Y %H:%M") }}
     action:
       - service: modbus.write_register
         data_template:
@@ -3713,7 +3719,10 @@ automation:
       - platform: state
         entity_id:
           - input_button.set_ac_wb_start_charging
-    condition: []
+    condition:
+      - condition: template
+        value_template: >-
+          {{ states('sensor.charger_wb_charging_enabled_raw') | int != 85 }}
     variables:
       start_charging: 170
       stop_charging: 85
@@ -3743,7 +3752,10 @@ automation:
       - platform: state
         entity_id:
           - input_button.set_ac_wb_stop_charging
-    condition: []
+    condition:
+      - condition: template
+        value_template: >-
+          {{ states('sensor.charger_wb_charging_enabled_raw') | int != stop_charging }}
     variables:
       start_charging: 170
       stop_charging: 85
