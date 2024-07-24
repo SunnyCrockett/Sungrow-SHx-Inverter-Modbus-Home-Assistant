@@ -3305,6 +3305,10 @@ automation:
       - platform: state
         entity_id:
           - input_number.set_ac_wb_charging_quantity
+    condition:
+      - condition: template
+        value_template: >-
+          {{ states('input_number.set_ac_wb_charging_quantity') | float != states('sensor.charger_wb_charging_quantity') | float }}
     action:
       - service: modbus.write_register
         data_template:
@@ -3350,7 +3354,10 @@ automation:
       - platform: state
         entity_id:
           - input_select.set_ac_wb_charging_power_customized_charge
-    condition: []
+    condition:
+      - condition: template
+        value_template: >-
+          {{ states('input_select.set_ac_wb_charging_power_customized_charge') != states('sensor.charging_power_customized_charge') }}
     action:
       - service: modbus.write_register
         data_template:
@@ -3556,7 +3563,10 @@ automation:
       - platform: state
         entity_id:
           - input_select.set_ac_wb_charging_mode
-    condition: []
+    condition:
+      - condition: template
+        value_template: >-
+          {{ states('input_select.set_ac_wb_charging_mode') != states('sensor.charging_mode') }}
     variables:
       fast_charging: 0xA0 #160 #Fast charging
       surplus_charging: 0xA1 #161 #Surplus charging
