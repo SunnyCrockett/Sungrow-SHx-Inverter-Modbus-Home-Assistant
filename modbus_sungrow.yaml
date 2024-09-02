@@ -1785,7 +1785,6 @@ sensor:
     name: "Daily consumed energy (filtered)"
     entity_id: sensor.daily_consumed_energy
     # commented following line, due to: 'device_class' is an invalid option for 'sensor.filter', check: device_class
-									   
     # device_class: energy
     # commented following line, due to: 'state_class' is an invalid option for 'sensor.filter', check: state_class
     # state_class: total_increasing
