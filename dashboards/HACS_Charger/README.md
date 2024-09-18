@@ -25,7 +25,7 @@ Open Dashboard and paste the content of the provided dashboard.yaml file
 
 # Screenshots
 
-![image](https://github.com/SunnyCrockett/Sungrow-SHx-Inverter-Modbus-Home-Assistant/assets/153714968/cfbb4004-60bb-4421-acb2-ea46e84a77e7)
+![image](https://github.com/user-attachments/assets/81ec49d0-e2d5-4424-8f4b-f2e64791cc75)
 
 ![image](https://github.com/SunnyCrockett/Sungrow-SHx-Inverter-Modbus-Home-Assistant/assets/153714968/e9dc2012-ad9d-405d-8647-6f1e94e977f3)
 
