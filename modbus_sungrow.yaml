@@ -2728,6 +2728,14 @@ input_number:
     step: 1
     mode: box
     icon: mdi:battery-arrow-down-outline
+    
+  set_ac_wb_start_by_soc_percentage:
+    name: Start charging by SoC percentage
+    min: 1
+    max: 100
+    step: 1
+    mode: box
+    icon: mdi:battery-arrow-up-outline
 
 #end of charger input_number
 
@@ -2815,6 +2823,10 @@ input_boolean:
   set_ac_wb_stop_by_soc_enabled:
     name: Stop charging by SoC enabled
     icon: mdi:battery-arrow-down-outline
+    
+  set_ac_wb_start_by_soc_enabled:
+    name: Start charging by SoC enabled
+    icon: mdi:battery-arrow-up-outline
 
 input_datetime:
   set_ac_wb_charging_duration:
@@ -3918,6 +3930,32 @@ automation:
       - action: automation.trigger
         target:
           entity_id: automation.stop_charging_via_inverter
+        data:
+          skip_condition: true
+    mode: single
+    
+  - id: "automation_ac_wb_start_charging_by_soc"
+    alias: "start charging via inverter by soc"
+    description: ""
+    trigger:
+      - platform: numeric_state
+        entity_id:
+          - sensor.battery_level
+        above: input_number.set_ac_wb_start_by_soc_percentage
+    condition:
+      - condition: state
+        entity_id: input_boolean.set_ac_wb_start_by_soc_enabled
+        state: "on"
+      - condition: state
+        state: "85"
+        entity_id: sensor.charger_wb_charging_enabled_raw
+      - condition: state
+        state: "161"
+        entity_id: sensor.charger_wb_charging_mode_raw
+    action:
+      - action: automation.trigger
+        target:
+          entity_id: automation.start_charging_via_inverter
         data:
           skip_condition: true
     mode: single
