@@ -275,6 +275,8 @@ views:
           - entity: sensor.charger_wb_surplus_power_from_grid
           - entity: input_boolean.set_ac_wb_stop_by_soc_enabled
           - entity: input_number.set_ac_wb_stop_by_soc_percentage
+          - entity: input_boolean.set_ac_wb_start_by_soc_enabled
+          - entity: input_number.set_ac_wb_start_by_soc_percentage
         title: Surplus charging
       - type: entities
         entities:
