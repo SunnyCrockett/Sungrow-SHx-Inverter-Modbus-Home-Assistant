@@ -1,0 +1,352 @@
+views:
+  - title: Overview
+    cards:
+      - type: custom:charger-card
+        entity: sensor.charging_power
+        brand: sungrow
+        show_leds: false
+        details:
+          name:
+            entity_id: sensor.wb1_dev_number_raw
+            attribute: name
+          status:
+            entity_id: sensor.charging_status
+          currentlimits:
+            - 6
+            - 7
+            - 8
+            - 9
+            - 10
+            - 11
+            - 12
+            - 13
+            - 14
+            - 15
+            - 16
+            - 20
+            - 32
+            - 63
+          statetext:
+            Available: Available
+            Preparing: Plugged in
+            SuspendedEV: Stopped (Car)
+            Charging: Charging
+            Finishing: Finishing
+          collapsiblebuttons:
+            group1:
+              text: Details
+              icon: mdi:speedometer
+            group2:
+              text: Information
+              icon: mdi:information
+            group3:
+              text: Config
+              icon: mdi:cog
+          info_left:
+            - entity_id: sensor.charger_system_datetime
+              text: Current datetime
+              icon: mdi:gas-station-in-use-outline
+          info_right:
+            - entity_id: sensor.charging_power
+              text: Watt
+              icon: mdi:car-turbocharger
+              unit_show: true
+            - entity_id: sensor.output_current_setting
+              text: Ampere
+              icon: mdi:power-socket-fr
+              unit_show: true
+          group1:
+            - entity_id: sensor.charging_duration
+              text: Charging duration
+              icon: mdi:timelapse
+              unit_show: false
+            - entity_id: sensor.charged_range
+              text: Charged range
+              icon: mdi:highway
+              unit_show: false
+            - entity_id: sensor.charging_start_time
+              text: Charging start time
+              icon: mdi:timer-play
+            - entity_id: sensor.charging_end_time
+              text: Charging end time
+              icon: mdi:timer-stop
+          group2:
+            - entity_id: sensor.phase_a_charging_current
+              text: Phase A current
+            - entity_id: sensor.phase_a_charging_voltage
+              text: Phase A voltage
+            - entity_id: sensor.phase_b_charging_current
+              text: Phase B current
+            - entity_id: sensor.phase_b_charging_voltage
+              text: Phase B voltage
+            - entity_id: sensor.phase_c_charging_current
+              text: Phase C current
+            - entity_id: sensor.phase_c_charging_voltage
+              text: Phase C voltage
+          group3:
+            - entity_id: sensor.mileage_per_kwh
+              text: Kilometers per kWh
+              icon: mdi:map-marker-distance
+              unit_show: true
+            - entity_id: sensor.phase_switching_status
+              text: Used phases
+              icon: mdi:counter
+            - entity_id: sensor.charging_mode
+              text: Charging mode
+              icon: mdi:ev-station
+          stats:
+            default:
+              - entity_id: sensor.charging_status_stop_reason
+                text: Stop reason
+              - entity_id: sensor.charging_status_error_code_connector
+                text: Error (connector)
+              - entity_id: sensor.charging_status_error_code
+                text: Error (ocpp)
+            Available:
+              - entity_id: sensor.charging_status_stop_reason
+                text: Stop reason
+              - entity_id: sensor.charging_status_error_code_connector
+                text: Error (connector)
+              - entity_id: sensor.charging_status_error_code
+                text: Error (ocpp)
+            SuspendedEV:
+              - entity_id: sensor.charging_status_energy_session
+                text: Energy charged
+                unit_show: true
+              - entity_id: sensor.charging_status_stop_reason
+                text: Stop reason
+              - entity_id: sensor.charging_status_error_code_connector
+                text: Error (connector)
+              - entity_id: sensor.charging_status_error_code
+                text: Error (ocpp)
+            Preparing:
+              - entity_id: sensor.charging_status_stop_reason
+                text: Stop reason
+            Charging:
+              - entity_id: sensor.charging_status_energy_session
+                text: session_energy
+                unit_show: true
+              - entity_id: sensor.charging_status_stop_reason
+                text: Stop reason
+              - entity_id: sensor.charging_status_error_code_connector
+                text: Error (connector)
+              - entity_id: sensor.charging_status_error_code
+                text: Error (ocpp)
+              - entity_id: sensor.charging_status_current_offered
+                text: Max Current
+              - entity_id: sensor.charging_status_time_session
+                text: Charging time elapsed
+          toolbar_left:
+            default:
+              - service: input_button.press
+                service_data:
+                  entity_id: input_button.set_ac_wb_start_charging
+                text: Start charging
+                icon: mdi:play-speed
+              - service: input_button.press
+                service_data:
+                  entity_id: input_button.set_ac_wb_stop_charging
+                text: Stop charging
+                icon: hass:stop
+            Available:
+              - service: switch.toggle
+                service_data:
+                  entity_id: undefined
+                text: Toggle charging
+                icon: hass:flash
+              - service: button.press
+                service_data:
+                  entity_id: undefined
+                text: Restart charger
+                icon: hass:restart
+              - service: number.set_value
+                service_data:
+                  entity_id: undefined
+                  value: '#SERVICEVAL#'
+                type: dropdown
+                text: Set max current
+                icon: hass:current-ac
+            SuspendedEV:
+              - service: switch.turn_off
+                service_data:
+                  entity_id: undefined
+                text: Stop charging
+                icon: hass:flash-alert
+              - service: button.press
+                service_data:
+                  entity_id: undefined
+                text: Restart charger
+                icon: hass:restart
+              - service: number.set_value
+                service_data:
+                  entity_id: undefined
+                  value: '#SERVICEVAL#'
+                type: dropdown
+                text: Set max current
+                icon: hass:current-ac
+            SuspendedEVSE:
+              - service: switch.turn_on
+                service_data:
+                  entity_id: undefined
+                text: Stop charing
+                icon: hass:flash-alert
+              - service: button.press
+                service_data:
+                  entity_id: undefined
+                text: Restart charger
+                icon: hass:restart
+              - service: number.set_value
+                service_data:
+                  entity_id: undefined
+                  value: '#SERVICEVAL#'
+                type: dropdown
+                text: Set max current
+                icon: hass:current-ac
+            Charging:
+              - service: switch.turn_off
+                service_data:
+                  entity_id: undefined
+                text: Stop charging
+                icon: hass:stop
+              - service: button.press
+                service_data:
+                  entity_id: undefined
+                text: Restart charger
+                icon: hass:restart
+              - service: number.set_value
+                service_data:
+                  entity_id: undefined
+                  value: '#SERVICEVAL#'
+                type: dropdown
+                text: Set max current
+                icon: hass:current-ac
+            Finishing:
+              - service: button.press
+                service_data:
+                  entity_id: undefined
+                text: Restart charger
+                icon: hass:restart
+              - service: switch.toggle
+                service_data:
+                  entity_id: undefined
+                text: Toggle charging
+                icon: hass:flash
+            Preparing:
+              - service: switch.turn_on
+                service_data:
+                  entity_id: undefined
+                text: Stop charing
+                icon: hass:flash-alert
+              - service: button.press
+                service_data:
+                  entity_id: undefined
+                text: Restart charger
+                icon: hass:restart
+              - service: number.set_value
+                service_data:
+                  entity_id: undefined
+                  value: '#SERVICEVAL#'
+                type: dropdown
+                text: Set max current
+                icon: hass:current-ac
+        chargerImage: White
+        customImage: \local\sungrow_wb_bl.png
+        customCardTheme: theme_transp_blue
+        compact_view: false
+        show_toolbar: true
+        show_name: true
+        show_status: true
+        show_stats: false
+        show_collapsibles: true
+      - type: entities
+        entities:
+          - entity: input_button.set_ac_wb_start_charging
+          - entity: input_button.set_ac_wb_stop_charging
+          - entity: sensor.charger_wb_charging_enabled
+          - entity: sensor.charging_status
+          - entity: input_select.set_ac_wb_charging_mode
+          - entity: sensor.charging_mode
+          - entity: input_number.set_wb1_mileage_per_kwh
+          - entity: sensor.mileage_per_kwh
+        title: Charger settings
+      - type: entities
+        entities:
+          - entity: input_boolean.set_ac_wb_surplus_power_from_grid
+          - entity: sensor.charger_wb_surplus_power_from_grid
+          - entity: input_boolean.set_ac_wb_stop_by_soc_enabled
+          - entity: input_number.set_ac_wb_stop_by_soc_percentage
+          - entity: input_boolean.set_ac_wb_start_by_soc_enabled
+          - entity: input_number.set_ac_wb_start_by_soc_percentage
+        title: Surplus charging
+      - type: entities
+        entities:
+          - entity: input_number.set_ac_wb_charging_quantity
+          - entity: sensor.charger_wb_charging_quantity
+          - entity: input_datetime.set_ac_wb_charging_duration
+          - entity: sensor.charger_charging_duration
+        title: Preset charging
+      - type: entities
+        entities:
+          - entity: input_datetime.set_ac_wb_customized_charge_start_time
+          - entity: sensor.charger_customized_charge_start_time
+          - entity: input_datetime.set_ac_wb_customized_charge_end_time
+          - entity: sensor.charger_customized_charge_end_time
+          - entity: input_select.set_ac_wb_charging_power_customized_charge
+          - entity: sensor.charging_power_customized_charge
+        title: Customized charging
+      - type: entities
+        entities:
+          - entity: sensor.charging_energy
+          - entity: sensor.charging_duration
+          - entity: sensor.charged_range
+          - entity: sensor.charging_start_time
+          - entity: sensor.charging_end_time
+          - entity: sensor.charging_power
+          - entity: sensor.output_current_setting
+        title: Charging infos
+    icon: mdi:ev-plug-type2
+  - title: Advanced
+    path: advanced
+    icon: mdi:car-cog
+    cards:
+      - type: entities
+        entities:
+          - entity: sensor.wb1_dev_number_raw
+          - entity: sensor.total_energy
+          - entity: sensor.minimum_charging_power
+          - entity: sensor.maximum_charging_power
+          - entity: sensor.power_phases
+          - entity: sensor.rated_voltage
+          - entity: sensor.charger_system_datetime
+        title: Infos
+      - type: entities
+        entities:
+          - entity: input_select.set_wb_charger_enable
+          - entity: sensor.charger_enable
+          - entity: input_select.set_wb_phase_switch
+          - entity: sensor.phase_switching_status
+          - entity: input_number.set_wb1_output_current
+          - entity: sensor.output_current_setting
+          - entity: input_select.set_wb_working_mode
+          - entity: sensor.wallbox_working_mode
+          - entity: input_button.wb_start_charging
+            name: Start charging (charger)
+          - entity: input_button.wb_stop_charging
+            name: Stop charging (charger)
+          - entity: sensor.start_mode
+        title: Advanced settings
+        show_header_toggle: false
+      - type: entities
+        entities:
+          - entity: sensor.phase_a_charging_current
+          - entity: sensor.phase_a_charging_voltage
+          - entity: sensor.phase_b_charging_current
+          - entity: sensor.phase_b_charging_voltage
+          - entity: sensor.phase_c_charging_current
+          - entity: sensor.phase_c_charging_voltage
+          - entity: sensor.rated_voltage
+        title: Charging details
+      - type: entities
+        entities:
+          - entity: sensor.ac_wb_unknown_33538
+        title: '???'
