@@ -1665,6 +1665,145 @@ modbus:
         state_class: measurement
         scan_interval: 10
 
+      ###################################
+      # holding registers of charger
+      ###################################
+
+      - name: Charger system clock year
+        unique_id: ac_system_clock_year
+        device_address: !secret sungrow_modbus_slave
+        address: 4999 # reg 5000
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # Systemzeit Jahr unit:
+
+      - name: Charger system clock month
+        unique_id: ac_system_clock_month
+        device_address: !secret sungrow_modbus_slave
+        address: 5000 # reg 5001
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # Systemzeit Monat unit:
+
+      - name: Charger system clock day
+        unique_id: ac_system_clock_day
+        device_address: !secret sungrow_modbus_slave
+        address: 5001 # reg 5002
+        input_type: holding
+        data_type: uint16
+        scan_interval: 600
+        # Systemzeit Tag unit:
+
+      - name: Charger system clock hour
+        unique_id: ac_system_clock_hour
+        device_address: !secret sungrow_modbus_slave
+        address: 5002 # reg 5003
+        input_type: holding
+        data_type: uint16
+        scan_interval: 60
+        # Systemzeit Stunde unit:
+
+      - name: Charger system clock minute
+        unique_id: ac_system_clock_minute
+        device_address: !secret sungrow_modbus_slave
+        address: 5003 # reg 5004
+        input_type: holding
+        data_type: uint16
+        scan_interval: 60
+        # Systemzeit Minute unit:
+
+      - name: ac wb Unknown 33538
+        unique_id: ac_wb_unknown_33538
+        device_address: !secret sungrow_modbus_slave
+        address: 33538 # reg 33539
+        input_type: holding
+        data_type: uint16
+        scan_interval: 60
+
+      - name: Charger wb charging enabled raw
+        unique_id: ac_wb_charging_enabled_raw
+        device_address: !secret sungrow_modbus_slave
+        address: 33539 # reg 33540
+        input_type: holding
+        data_type: uint16
+        scan_interval: 60
+        # 85: disabled / 170: enabled
+
+      - name: Charger wb charging mode raw
+        unique_id: ac_wb_charging_mode_raw
+        device_address: !secret sungrow_modbus_slave
+        address: 33540 # reg 33541
+        input_type: holding
+        data_type: uint16
+        scan_interval: 300
+        # wb charging mode (160=fastCharge 161=surplusCharge 162=presetCharge 163=customizedCharge) unit:
+
+      - name: Charger wb charging quantity
+        unique_id: ac_wb_charging_quantity
+        device_address: !secret sungrow_modbus_slave
+        address: 33541 # reg 33542
+        input_type: holding
+        data_type: uint16
+        precision: 1
+        unit_of_measurement: kWh
+        scale: 0.1
+        scan_interval: 300
+        # wb charging quantity (e.g. 12kwh = 120) unit:
+
+      - name: Charger wb charging duration raw
+        unique_id: ac_wb_charging_duration_raw
+        device_address: !secret sungrow_modbus_slave
+        address: 33542 # reg 33543
+        input_type: holding
+        data_type: uint32
+        swap: word
+        scan_interval: 300
+        # wb charging duration unit:
+
+      - name: Charger wb charging power customized charge raw
+        unique_id: ac_wb_charging_power_customized_charge_raw
+        device_address: !secret sungrow_modbus_slave
+        address: 33544 # reg 33545
+        input_type: holding
+        data_type: uint16
+        scan_interval: 300
+        # wb customized charging (eg. 10A = 100) unit:
+
+      - name: Charger wb customized charge start time raw
+        unique_id: ac_wb_customized_charge_start_time_raw
+        device_address: !secret sungrow_modbus_slave
+        address: 33545 # reg 33546
+        input_type: holding
+        data_type: uint32
+        swap: word
+        scan_interval: 300
+        # wb customized start time  unit:
+
+      - name: Charger wb customized charge end time raw
+        unique_id: ac_wb_customized_charge_end_time_raw
+        device_address: !secret sungrow_modbus_slave
+        address: 33547 # reg 33548
+        input_type: holding
+        data_type: uint32
+        swap: word
+        scan_interval: 300
+        # wb customized charge end time  unit:
+
+      - name: Charger wb surplus power from grid raw
+        unique_id: ac_wb_surplus_power_from_grid_raw
+        device_address: !secret sungrow_modbus_slave
+        address: 33549 # reg 33550
+        input_type: holding
+        data_type: uint16
+        scan_interval: 300
+        # wb surplus 170=powerFromGrid 85=noPowerFromGrid unit:
+
+      ###################################
+      # end holding registers of charger
+      ###################################
+
 sensor:
   - platform: filter
     name: "Daily consumed energy (filtered)"
@@ -2450,6 +2589,90 @@ template:
             )
           }}
 
+      ###################################
+      # charger templates
+      ###################################
+      
+      - name: Charging mode
+        unique_id: ac_wb_charging_mode
+        state: >-
+          {% if ((states('sensor.charger_wb_charging_mode_raw') | int(default=0))  == 160) %}
+            Fast charging
+          {% elif ((states('sensor.charger_wb_charging_mode_raw') | int(default=0))  == 161) %}
+            Surplus charging
+          {% elif ((states('sensor.charger_wb_charging_mode_raw') | int(default=0))  == 162) %}
+            Preset charging
+          {% elif ((states('sensor.charger_wb_charging_mode_raw') | int(default=0)) == 163) %}
+            Customized charging
+          {% else %}
+            Unknown charging mode!
+          {% endif %}
+
+      - name: Charging power customized charge
+        unique_id: ac_wb_charging_power_customized_charge
+        state: >-
+          {% if ((states('sensor.charger_wb_charging_power_customized_charge_raw') | int(default=0))  == 160) %}
+            16A 11kW
+          {% elif ((states('sensor.charger_wb_charging_power_customized_charge_raw') | int(default=0))  == 140) %}
+            14A 9,66kW
+          {% elif ((states('sensor.charger_wb_charging_power_customized_charge_raw') | int(default=0))  == 120) %}
+            12A 8,28kW
+          {% elif ((states('sensor.charger_wb_charging_power_customized_charge_raw') | int(default=0)) == 100) %}
+            10A 6,9kW
+          {% elif ((states('sensor.charger_wb_charging_power_customized_charge_raw') | int(default=0))  == 80) %}
+            8A 5,52kW
+          {% elif ((states('sensor.charger_wb_charging_power_customized_charge_raw') | int(default=0)) == 60) %}
+            6A 4,14kW
+          {% else %}
+            Unknown power for customized charge!
+          {% endif %}
+
+      - name: Charger customized charge start time
+        unique_id: charger_wb_customized_charge_start_time
+        state: >
+          {{ as_datetime(states.sensor.charger_wb_customized_charge_start_time_raw.state).strftime("%d.%m.%Y %H:%M") }}
+
+      - name: Charger customized charge end time
+        unique_id: charger_wb_customized_charge_end_time
+        state: >
+          {{ as_datetime(states.sensor.charger_wb_customized_charge_end_time_raw.state).strftime("%d.%m.%Y %H:%M") }}
+
+      - name: Charger charging duration
+        unique_id: charger_wb_charging_duration
+        state: >
+          {{ as_datetime(states.sensor.charger_wb_charging_duration_raw.state).strftime("%d.%m.%Y %H:%M") }}
+
+      - name: Charger system datetime
+        unique_id: charger_wb_system_datetime
+        state: >
+          {{ states('sensor.charger_system_clock_year')}}-{{"%.2d" | format(states('sensor.charger_system_clock_month') | int)}}-{{"%.2d" | format(states('sensor.charger_system_clock_day') | int)}} {{"%.2d" | format(states('sensor.charger_system_clock_hour') | int)}}:{{"%.2d" | format(states('sensor.charger_system_clock_minute') | int) }}
+
+      - name: Charger wb surplus power from grid
+        unique_id: ac_wb_surplus_power_from_grid
+        state: >-
+          {% if is_state("sensor.charger_wb_surplus_power_from_grid_raw", "170") %}
+            On
+          {% elif is_state("sensor.charger_wb_surplus_power_from_grid_raw", "85") %}
+            Off
+          {% else %}
+            Unknown status {{ states("sensor.charger_wb_surplus_power_from_grid_raw") }}
+          {% endif %}
+
+      - name: Charger wb charging enabled
+        unique_id: ac_wb_charging_enabled
+        state: >-
+          {% if is_state("sensor.charger_wb_charging_enabled_raw", "170") %}
+            On
+          {% elif is_state("sensor.charger_wb_charging_enabled_raw", "85") %}
+            Off
+          {% else %}
+            Unknown status {{ states("sensor.charger_wb_charging_enabled_raw") }}
+          {% endif %}
+
+      ###################################
+      # end charger templates
+      ###################################
+
 # getting input for Min and Max SoC
 input_number:
   set_sg_min_soc:
@@ -2510,6 +2733,55 @@ input_number:
     max: 10500 # Note: max for SH10.RT. It would be ncie to have this as a global variable /secret
     step: 100
 
+  ###################################
+  # charger input_number
+  ###################################
+
+  set_ac_wb_charging_quantity:
+    name: Set charger charging quantity
+    min: 1
+    max: 200
+    step: 1
+    mode: box
+    initial: 200
+    
+  set_ac_wb_stop_by_soc_percentage:
+    name: Stop charging by SoC percentage
+    min: 1
+    max: 100
+    step: 1
+    mode: box
+    icon: mdi:battery-arrow-down-outline
+    
+  set_ac_wb_start_by_soc_percentage:
+    name: Start charging by SoC percentage
+    min: 1
+    max: 100
+    step: 1
+    mode: box
+    icon: mdi:battery-arrow-up-outline
+
+  ###################################
+  # end of charger input_number
+  ###################################
+
+###################################
+# charger input_button
+###################################
+
+input_button:
+  set_ac_wb_start_charging:
+    name: Start charging
+    icon: mdi:play
+
+  set_ac_wb_stop_charging:
+    name: Stop charging
+    icon: mdi:stop
+
+###################################
+# end of charger input_button
+###################################
+
 input_select:
   set_sg_inverter_run_mode:
     name: Inverter mode
@@ -2550,6 +2822,82 @@ input_select:
       - "Enabled"
       - "Disabled"
     icon: mdi:export
+
+  ###################################
+  # charger input_select
+  ###################################
+
+  set_ac_wb_charging_mode:
+    name: Charging mode
+    options:
+      - "Fast charging"
+      - "Surplus charging"
+      - "Preset charging"
+      - "Customized charging"
+    icon: mdi:ev-station
+
+  set_ac_wb_charging_power_customized_charge:
+    name: Charging power customized charge
+    options:
+      - "16A 11kW"
+      - "14A 9,66kW"
+      - "12A 8,28kW"
+      - "10A 6,9kW"
+      - "8A 5,52kW"
+      - "6A 4,14kW"
+    icon: mdi:arrow-up-down-bold
+
+  ###################################
+  # end of charger input_select
+  ###################################
+
+###################################
+# charger input_boolean
+###################################
+
+input_boolean:
+  set_ac_wb_surplus_power_from_grid:
+    name: Surplus charging - power from grid
+    icon: mdi:transmission-tower-export
+    
+  set_ac_wb_stop_by_soc_enabled:
+    name: Stop charging by SoC enabled
+    icon: mdi:battery-arrow-down-outline
+    
+  set_ac_wb_start_by_soc_enabled:
+    name: Start charging by SoC enabled
+    icon: mdi:battery-arrow-up-outline
+
+###################################
+# end of charger input_boolean
+###################################
+
+###################################
+# charger input_datetime
+###################################
+
+input_datetime:
+  set_ac_wb_charging_duration:
+    name: Charger charging duration picker
+    has_date: true
+    has_time: true
+    icon: mdi:timelapse
+
+  set_ac_wb_customized_charge_start_time:
+    name: Charger customized charge start time picker
+    has_date: true
+    has_time: true
+    icon: mdi:clock-start
+
+  set_ac_wb_customized_charge_end_time:
+    name: Charger customized charge end time picker
+    has_date: true
+    has_time: true
+    icon: mdi:clock-end
+
+###################################
+# end of charger input_datetime
+###################################
 
 # Automations: Write modbus registers on input changes via GUI
 # note: If you change a value by the sliders, it will take up to 60 seconds until the state variables are updated
@@ -3125,6 +3473,546 @@ automation:
 #                state: 'off'
 #            sequence:
 #              - action: script.sg_self_consumption_mode
+
+###################################
+# automations of charger
+###################################
+
+  - id: "automation_sungrow_charger_wb_charging_quantity"
+    alias: "charger charging quantity"
+    description: "Sets charger charging quantity"
+    trigger:
+      - platform: state
+        entity_id:
+          - input_number.set_ac_wb_charging_quantity
+    condition:
+      - condition: template
+        value_template: >-
+          {{ states('input_number.set_ac_wb_charging_quantity') | float != states('sensor.charger_wb_charging_quantity') | float }}
+    action:
+      - action: modbus.write_register
+        data_template:
+          hub: SungrowSHx
+          slave: !secret sungrow_modbus_slave
+          address: 33541 # reg 33542
+          value: "{{ states('input_number.set_ac_wb_charging_quantity') | int * 10 }}"
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 10
+          milliseconds: 0
+      - action: homeassistant.update_entity
+        data: {}
+        target:
+          entity_id: sensor.charger_wb_charging_quantity
+    mode: single
+
+  - id: "automation_sungrow_charger_wb_charging_quantity_input_number_update"
+    alias: "charger charging quantity update"
+    description: "Sets charger charging quantity"
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: state
+        entity_id:
+          - sensor.charger_wb_charging_quantity
+    condition:
+      - condition: template
+        value_template: "{{ not is_state('sensor.charger_wb_charging_quantity', 'unavailable') }}"
+    action:
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.set_ac_wb_charging_quantity
+        data:
+          value: "{{ states('sensor.charger_wb_charging_quantity') }}"
+    mode: single
+
+  - id: "automation_sungrow_charger_wb_charging_power_customized_charge"
+    alias: "sungrow charger wb power customized charge"
+    description: "Set charger wb wb power customized charge"
+    trigger:
+      - platform: state
+        entity_id:
+          - input_select.set_ac_wb_charging_power_customized_charge
+    condition:
+      - condition: template
+        value_template: >-
+          {{ states('input_select.set_ac_wb_charging_power_customized_charge') != states('sensor.charging_power_customized_charge') }}
+    action:
+      - action: modbus.write_register
+        data_template:
+          hub: SungrowSHx
+          slave: !secret sungrow_modbus_slave
+          address: 33544 # reg 33545
+          value: >
+            {% if is_state('input_select.set_ac_wb_charging_power_customized_charge', "16A 11kW") %} 
+              160
+            {% elif is_state('input_select.set_ac_wb_charging_power_customized_charge', "14A 9,66kW") %} 
+              140
+            {% elif is_state('input_select.set_ac_wb_charging_power_customized_charge', "12A 8,28kW") %} 
+              120
+            {% elif is_state('input_select.set_ac_wb_charging_power_customized_charge', "10A 6,9kW") %} 
+              100
+            {% elif is_state('input_select.set_ac_wb_charging_power_customized_charge', "8A 5,52kW") %} 
+              80
+            {% elif is_state('input_select.set_ac_wb_charging_power_customized_charge', "6A 4,14kW") %} 
+              60
+            {% endif %}
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 10
+          milliseconds: 0
+      - action: homeassistant.update_entity
+        data: {}
+        target:
+          entity_id: sensor.charger_wb_charging_power_customized_charge_raw
+    mode: single
+
+  - id: "automation_sungrow_charger_wb_charging_power_customized_charge_input_select_update"
+    alias: "sungrow charger wb power customized charge input select update"
+    description: "Updates Sungrow charger wb power customized charge input select"
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: state
+        entity_id:
+          - sensor.charger_wb_charging_power_customized_charge_raw
+    condition:
+      - condition: template
+        value_template: "{{ not is_state('sensor.charger_wb_charging_power_customized_charge_raw', 'unavailable') }}"
+    action:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.set_ac_wb_charging_power_customized_charge
+        data:
+          option: "{{ states('sensor.charging_power_customized_charge') }}"
+    mode: single
+
+  - id: "automation_sungrow_charger_wb_charging_duration_input_datetime_update"
+    alias: "sungrow charger wb charging duration input datetime update"
+    description: "Updates Sungrow charger wb charging duration input datetime"
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: state
+        entity_id:
+          - sensor.charger_wb_charging_duration_raw
+    condition:
+      - condition: template
+        value_template: "{{ not is_state('sensor.charger_wb_charging_duration_raw', 'unavailable') }}"
+    action:
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.set_ac_wb_charging_duration
+        data:
+          datetime: "{{ as_datetime(states.sensor.charger_wb_charging_duration_raw.state).date() }} {{ as_datetime(states.sensor.charger_wb_charging_duration_raw.state).time() }}"
+    mode: single
+
+  - id: 'automation_set_sungrow_charger_wb_charging_duration'
+    alias: set sungrow charger wb charging duration
+    description: ''
+    trigger:
+      - platform: state
+        entity_id:
+        - input_datetime.set_ac_wb_charging_duration
+    condition:
+      - condition: template
+        value_template: >-
+          {{ as_datetime(states.input_datetime.set_ac_wb_charging_duration.state).strftime("%d.%m.%Y %H:%M") != as_datetime(states.sensor.charger_wb_charging_duration_raw.state).strftime("%d.%m.%Y %H:%M") }}
+    action:
+      - action: modbus.write_register
+        data_template:
+          hub: SungrowSHx
+          address: 33542 # reg 33543
+          slave: !secret sungrow_modbus_slave
+          value: >
+            {% set hexTimestamp = '%0x' % as_timestamp(states('input_datetime.set_ac_wb_charging_duration')+"+00:00") | int %}
+            [0x{{ hexTimestamp[4:] }}, 0x{{ hexTimestamp[:4] }}]
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 10
+          milliseconds: 0
+      - action: homeassistant.update_entity
+        data: {}
+        target:
+          entity_id: sensor.charger_wb_charging_duration_raw
+    mode: single
+
+  - id: "automation_sungrow_charger_wb_customized_charge_start_time_input_datetime_update"
+    alias: "sungrow charger wb customized charge start time input datetime update"
+    description: "Updates Sungrow charger wb customized charge start time input datetime"
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: state
+        entity_id:
+          - sensor.charger_wb_customized_charge_start_time_raw
+    condition:
+      - condition: template
+        value_template: "{{ not is_state('sensor.charger_wb_customized_charge_start_time_raw', 'unavailable') }}"
+    action:
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.set_ac_wb_customized_charge_start_time
+        data:
+          datetime: "{{ as_datetime(states.sensor.charger_wb_customized_charge_start_time_raw.state).date() }} {{ as_datetime(states.sensor.charger_wb_customized_charge_start_time_raw.state).time() }}"
+    mode: single
+
+  - id: 'automation_set_sungrow_charger_wb_customized_charge_start_time'
+    alias: set sungrow charger wb customized charge start time
+    description: ''
+    trigger:
+    - platform: state
+      entity_id:
+      - input_datetime.set_ac_wb_customized_charge_start_time
+    condition:
+      - condition: template
+        value_template: >-
+          {{ as_datetime(states.input_datetime.set_ac_wb_customized_charge_start_time.state).strftime("%d.%m.%Y %H:%M") != as_datetime(states.sensor.charger_wb_customized_charge_start_time_raw.state).strftime("%d.%m.%Y %H:%M") }}
+    action:
+      - action: modbus.write_register
+        data_template:
+          hub: SungrowSHx
+          address: 33545 # reg 33546
+          slave: !secret sungrow_modbus_slave
+          value: >
+            {% set hexTimestamp = '%0x' % as_timestamp(states('input_datetime.set_ac_wb_customized_charge_start_time')+"+00:00") | int %}
+            [0x{{ hexTimestamp[4:] }}, 0x{{ hexTimestamp[:4] }}]
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 10
+          milliseconds: 0
+      - action: homeassistant.update_entity
+        data: {}
+        target:
+          entity_id: sensor.charger_wb_customized_charge_start_time_raw
+    mode: single
+
+  - id: "automation_sungrow_charger_wb_customized_charge_end_time_input_datetime_update"
+    alias: "sungrow charger wb customized charge end time input datetime update"
+    description: "Updates Sungrow charger wb customized charge end time input datetime"
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: state
+        entity_id:
+          - sensor.charger_wb_customized_charge_end_time_raw
+    condition:
+      - condition: template
+        value_template: "{{ not is_state('sensor.charger_wb_customized_charge_end_time_raw', 'unavailable') }}"
+    action:
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.set_ac_wb_customized_charge_end_time
+        data:
+          datetime: "{{ as_datetime(states.sensor.charger_wb_customized_charge_end_time_raw.state).date() }} {{ as_datetime(states.sensor.charger_wb_customized_charge_end_time_raw.state).time() }}"
+    mode: single
+
+  - id: 'automation_set_sungrow_charger_wb_customized_charge_end_time'
+    alias: set sungrow charger wb customized charge end time
+    description: ''
+    trigger:
+    - platform: state
+      entity_id:
+      - input_datetime.set_ac_wb_customized_charge_end_time
+    condition:
+      - condition: template
+        value_template: >-
+          {{ as_datetime(states.input_datetime.set_ac_wb_customized_charge_end_time.state).strftime("%d.%m.%Y %H:%M") != as_datetime(states.sensor.charger_wb_customized_charge_end_time_raw.state).strftime("%d.%m.%Y %H:%M") }}
+    action:
+      - action: modbus.write_register
+        data_template:
+          hub: SungrowSHx
+          address: 33547 # reg 33548
+          slave: !secret sungrow_modbus_slave
+          value: >
+            {% set hexTimestamp = '%0x' % as_timestamp(states('input_datetime.set_ac_wb_customized_charge_end_time')+"+00:00") | int %}
+            [0x{{ hexTimestamp[4:] }}, 0x{{ hexTimestamp[:4] }}]
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 10
+          milliseconds: 0
+      - action: homeassistant.update_entity
+        data: {}
+        target:
+          entity_id: sensor.charger_wb_customized_charge_end_time_raw
+    mode: single
+
+  - id: "automation_sungrow_charger_wb_charging_mode"
+    alias: "sungrow charger wb charging mode"
+    description: "Set charger wb charging mode"
+    trigger:
+      - platform: state
+        entity_id:
+          - input_select.set_ac_wb_charging_mode
+    condition:
+      - condition: template
+        value_template: >-
+          {{ states('input_select.set_ac_wb_charging_mode') != states('sensor.charging_mode') }}
+    variables:
+      fast_charging: 0xA0 #160 #Fast charging
+      surplus_charging: 0xA1 #161 #Surplus charging
+      preset_charging: 0xA2 #162 #Preset charging
+      customized_charging: 0xA3 #163 #Customized charging
+    action:
+      - action: modbus.write_register
+        data_template:
+          hub: SungrowSHx
+          slave: !secret sungrow_modbus_slave
+          address: 33540 # reg 33541
+          value: >
+            {% if is_state('input_select.set_ac_wb_charging_mode', "Fast charging") %} 
+              {{fast_charging}}
+            {% elif is_state('input_select.set_ac_wb_charging_mode', "Surplus charging") %} 
+              {{surplus_charging}}
+            {% elif is_state('input_select.set_ac_wb_charging_mode', "Preset charging") %} 
+              {{preset_charging}}
+            {% elif is_state('input_select.set_ac_wb_charging_mode', "Customized charging") %} 
+              {{customized_charging}}
+            {% endif %}
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 10
+          milliseconds: 0
+      - action: homeassistant.update_entity
+        data: {}
+        target:
+          entity_id: sensor.charger_wb_charging_mode_raw
+    mode: single
+
+  - id: "automation_sungrow_charger_wb_charging_mode_input_select_update"
+    alias: "sungrow charger wb_charging mode input select update"
+    description: "Updates Sungrow charger wb charging mode input select"
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: state
+        entity_id:
+          - sensor.charger_wb_charging_mode_raw
+    condition:
+      - condition: template
+        value_template: "{{ not is_state('sensor.charger_wb_charging_mode_raw', 'unavailable') }}"
+    action:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.set_ac_wb_charging_mode
+        data:
+          option: "{{ states('sensor.charging_mode') }}"
+    mode: single
+
+  - id: 'automation_set_ac_wb_surplus_power_from_grid_input_select_update'
+    alias: toggle input for charger surplus power from grid
+    description: ''
+    trigger:
+    - platform: homeassistant
+      event: start
+    - platform: state
+      entity_id:
+      - sensor.charger_wb_surplus_power_from_grid_raw
+    condition: []
+    action:
+    - if:
+      - condition: state
+        entity_id: sensor.charger_wb_surplus_power_from_grid_raw
+        state: '170'
+      then:
+      - action: input_boolean.turn_on
+        data: {}
+        target:
+          entity_id: input_boolean.set_ac_wb_surplus_power_from_grid
+      else:
+      - action: input_boolean.turn_off
+        data: {}
+        target:
+          entity_id: input_boolean.set_ac_wb_surplus_power_from_grid
+    mode: single
+
+  - id: 'automation_ac_wb_surplus_power_from_grid_set_power_from_grid'
+    alias: enable power from grid for charger surplus mode
+    description: ''
+    trigger:
+    - platform: state
+      entity_id:
+      - input_boolean.set_ac_wb_surplus_power_from_grid
+      to: 'on'
+    condition:
+    - condition: state
+      entity_id: sensor.charger_wb_surplus_power_from_grid_raw
+      state: '85'
+    action:
+      - action: modbus.write_register
+        data:
+          hub: SungrowSHx
+          address: 33549 # reg 33550
+          slave: !secret sungrow_modbus_slave
+          value: 170
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 10
+          milliseconds: 0
+      - action: homeassistant.update_entity
+        data: {}
+        target:
+          entity_id: sensor.charger_wb_surplus_power_from_grid_raw
+    mode: single
+
+  - id: 'automation_ac_wb_surplus_power_from_grid_set_no_power_from_grid'
+    alias: disable power from grid for charger surplus mode
+    description: ''
+    trigger:
+    - platform: state
+      entity_id:
+      - input_boolean.set_ac_wb_surplus_power_from_grid
+      to: 'off'
+    condition:
+    - condition: state
+      entity_id: sensor.charger_wb_surplus_power_from_grid_raw
+      state: '170'
+    action:
+      - action: modbus.write_register
+        data:
+          hub: SungrowSHx
+          address: 33549 # reg 33550
+          slave: !secret sungrow_modbus_slave
+          value: 85
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 10
+          milliseconds: 0
+      - action: homeassistant.update_entity
+        data: {}
+        target:
+          entity_id: sensor.charger_wb_surplus_power_from_grid_raw
+    mode: single
+
+  - id: "automation_ac_wb_start_charging"
+    alias: "start charging via inverter"
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - input_button.set_ac_wb_start_charging
+    condition:
+      - condition: template
+        value_template: >-
+          {{ states('sensor.charger_wb_charging_enabled_raw') | int != start_charging }}
+    variables:
+      start_charging: 170
+      stop_charging: 85
+    action:
+      - action: modbus.write_register
+        data_template:
+          hub: SungrowSHx
+          slave: !secret sungrow_modbus_slave
+          address: 33539 # reg 33540
+          value: >
+              {{start_charging}}
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 10
+          milliseconds: 0
+      - action: homeassistant.update_entity
+        data: {}
+        target:
+          entity_id: sensor.charger_wb_charging_enabled_raw
+    mode: single
+
+  - id: "automation_ac_wb_stop_charging"
+    alias: "stop charging via inverter"
+    description: ""
+    trigger:
+      - platform: state
+        entity_id:
+          - input_button.set_ac_wb_stop_charging
+    condition:
+      - condition: template
+        value_template: >-
+          {{ states('sensor.charger_wb_charging_enabled_raw') | int != stop_charging }}
+    variables:
+      start_charging: 170
+      stop_charging: 85
+    action:
+      - action: modbus.write_register
+        data_template:
+          hub: SungrowSHx
+          slave: !secret sungrow_modbus_slave
+          address: 33539 # reg 33540
+          value: >
+              {{stop_charging}}
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 10
+          milliseconds: 0
+      - action: homeassistant.update_entity
+        data: {}
+        target:
+          entity_id: sensor.charger_wb_charging_enabled_raw
+    mode: single
+    
+  - id: "automation_ac_wb_stop_charging_by_soc"
+    alias: "stop charging via inverter by soc"
+    description: ""
+    trigger:
+      - platform: numeric_state
+        entity_id:
+          - sensor.battery_level
+        below: input_number.set_ac_wb_stop_by_soc_percentage
+    condition:
+      - condition: state
+        entity_id: input_boolean.set_ac_wb_stop_by_soc_enabled
+        state: "on"
+      - condition: state
+        state: "170"
+        entity_id: sensor.charger_wb_charging_enabled_raw
+      - condition: state
+        state: "161"
+        entity_id: sensor.charger_wb_charging_mode_raw
+    action:
+      - action: automation.trigger
+        target:
+          entity_id: automation.stop_charging_via_inverter
+        data:
+          skip_condition: true
+    mode: single
+    
+  - id: "automation_ac_wb_start_charging_by_soc"
+    alias: "start charging via inverter by soc"
+    description: ""
+    trigger:
+      - platform: numeric_state
+        entity_id:
+          - sensor.battery_level
+        above: input_number.set_ac_wb_start_by_soc_percentage
+    condition:
+      - condition: state
+        entity_id: input_boolean.set_ac_wb_start_by_soc_enabled
+        state: "on"
+      - condition: state
+        state: "85"
+        entity_id: sensor.charger_wb_charging_enabled_raw
+      - condition: state
+        state: "161"
+        entity_id: sensor.charger_wb_charging_mode_raw
+    action:
+      - action: automation.trigger
+        target:
+          entity_id: automation.start_charging_via_inverter
+        data:
+          skip_condition: true
+    mode: single
+
+###################################
+# end of automations of charger
+###################################
 
 script:
   sg_set_forced_discharge_battery_mode:
