@@ -1,7 +1,7 @@
 # Home Assistant Sungrow inverter integration
 # https://github.com/mkaiser/Sungrow-SHx-Inverter-Modbus-Home-Assistant
 # by Martin Kaiser
-#
+# 
 # last update: 2024-10-24 (2)
 #
 # Note: This YAML file will only work with Home Assistant >= 2024.10
@@ -2903,7 +2903,7 @@ input_datetime:
 # note: If you change a value by the sliders, it will take up to 60 seconds until the state variables are updated
 # Unfortunately, I could not find a way to "force update" modbus registers, yet...
 automation:
-  - id: "automation_sungrow_inverter_2state"
+  - id: "automation_sungrow_inverter_2_state"
     alias: "sungrow inverter 2 state"
     description: "Enables/ stops the inverter"
     trigger:
@@ -2928,7 +2928,7 @@ automation:
             {% endif %}
     mode: single
 
-  - id: "automation_sungrow_inverter_2state_input_selector_update"
+  - id: "automation_sungrow_inverter_2_state_input_selector_update"
     alias: "sungrow inverter 2 enable/ stop input selector update"
     description: "Updates enable/ stops input selector"
     trigger:
@@ -2951,7 +2951,7 @@ automation:
             {% endif %}
     mode: single
 
-  - id: "automation_sungrow_inverter_2update_max_soc"
+  - id: "automation_sungrow_inverter_2_update_max_soc"
     alias: "sungrow inverter 2 update max SoC"
     description: "Updates Sungrow max Soc holding register"
     trigger:
@@ -2968,7 +2968,7 @@ automation:
           value: "{{ states('input_number.set_sg_2_max_soc') | int *10}}"
     mode: single
 
-  - id: "automation_sungrow_inverter_2update_max_soc_input_slider_update"
+  - id: "automation_sungrow_inverter_2_update_max_soc_input_slider_update"
     alias: "sungrow inverter 2 max SoC input slider update"
     description: "Updates Sungrow max Soc input slider"
     trigger:
@@ -2984,7 +2984,7 @@ automation:
           value: "{{ states('sensor.max_soc_2') }}"
     mode: single
 
-  - id: "automation_sungrow_inverter_2update_min_soc"
+  - id: "automation_sungrow_inverter_2_update_min_soc"
     alias: "sungrow inverter 2 update min SoC"
     description: "Updates Sungrow min Soc holding register"
     trigger:
@@ -3001,7 +3001,7 @@ automation:
           value: "{{ states('input_number.set_sg_2_min_soc') | int *10}}"
     mode: single
 
-  - id: "automation_sungrow_inverter_2update_min_soc_input_slider_update"
+  - id: "automation_sungrow_inverter_2_update_min_soc_input_slider_update"
     alias: "sungrow inverter 2 min SoC input slider update"
     description: "Updates Sungrow min Soc input slider"
     trigger:
@@ -3017,7 +3017,7 @@ automation:
           value: "{{ states('sensor.min_soc_2') }}"
     mode: single
 
-  - id: "automation_sungrow_inverter_2update_reserved_soc_for_backup"
+  - id: "automation_sungrow_inverter_2_update_reserved_soc_for_backup"
     alias: "sungrow inverter 2 update reserved soc for backup"
     description: "Updates reserved SoC for backup register"
     trigger:
@@ -3034,7 +3034,7 @@ automation:
           value: "{{ states('input_number.set_sg_2_reserved_soc_for_backup') | int}}"
     mode: single
 
-  - id: "automation_sungrow_inverter_2update_reserved_backup_soc_input_slider_update"
+  - id: "automation_sungrow_inverter_2_update_reserved_backup_soc_input_slider_update"
     alias: "sungrow inverter 2 reserved backup SoC input slider update"
     description: "Updates Sungrow reserved backup Soc input slider"
     trigger:
@@ -3050,7 +3050,7 @@ automation:
           value: "{{ states('sensor.reserved_soc_for_backup_2') }}"
     mode: single
 
-  - id: "automation_sungrow_inverter_2update_battery_forced_charge_discharge_cmd"
+  - id: "automation_sungrow_inverter_2_update_battery_forced_charge_discharge_cmd"
     alias: "sungrow inverter 2 update battery forced charge discharge cmd"
     description: "Updates Sungrow holding register for battery forced charge discharge command"
     trigger:
@@ -3080,7 +3080,7 @@ automation:
             {% endif %}
     mode: single
 
-  - id: "automation_sungrow_inverter_2update_battery_forced_charge_discharge_cmd_input_select_update"
+  - id: "automation_sungrow_inverter_2_update_battery_forced_charge_discharge_cmd_input_select_update"
     alias: "sungrow inverter 2 update battery forced charge discharge cmd input select update"
     description: "Updates Sungrow battery forced charge discharge cmd input select"
     trigger:
@@ -3098,7 +3098,7 @@ automation:
           option: "{{ states('sensor.battery_forced_charge_discharge_cmd_2') }}"
     mode: single
 
-  - id: "automation_sungrow_inverter_2update_ems_mode"
+  - id: "automation_sungrow_inverter_2_update_ems_mode"
     alias: "sungrow inverter 2 update EMS mode"
     description: "Updates EMS mode"
     trigger:
@@ -3134,7 +3134,7 @@ automation:
             {% endif %}
     mode: single
 
-  - id: "automation_sungrow_inverter_2export_power_limit_mode_update"
+  - id: "automation_sungrow_inverter_2_export_power_limit_mode_update"
     alias: "sungrow inverter 2 export power limit mode update"
     description: "Updates Enable/Disable for export power limit mode"
     trigger:
@@ -3184,7 +3184,7 @@ automation:
             {% endif %}
     mode: single
 
-  - id: "automation_sungrow_inverter_2export_power_limit_update"
+  - id: "automation_sungrow_inverter_2_export_power_limit_update"
     alias: "sungrow inverter 2 export power limit update"
     description: "Updates export power limit slider"
     trigger:
@@ -3200,7 +3200,7 @@ automation:
           value: "{{ states('sensor.export_power_limit_2') }}"
     mode: single
 
-  - id: "automation_sungrow_inverter_2set_export_power_limit"
+  - id: "automation_sungrow_inverter_2_set_export_power_limit"
     alias: "sungrow inverter 2 export power limit"
     description: "Sets export power limit"
     trigger:
@@ -3217,7 +3217,7 @@ automation:
           value: "{{ states('input_number.set_sg_2_export_power_limit') }}"
     mode: single
 
-  - id: "automation_sungrow_inverter_2update_ems_mode_input_select_update"
+  - id: "automation_sungrow_inverter_2_update_ems_mode_input_select_update"
     alias: "sungrow inverter 2 update EMS mode input select update"
     description: "Updates EMS mode input select"
     trigger:
@@ -3235,7 +3235,7 @@ automation:
           option: "{{ states('sensor.ems_mode_selection_2') }}"
     mode: single
 
-  - id: "automation_sungrow_inverter_2update_battery_forced_charge_discharge_power"
+  - id: "automation_sungrow_inverter_2_update_battery_forced_charge_discharge_power"
     alias: "sungrow inverter 2 update battery forced charge discharge power"
     description: "Sets battery forced charge discharge power"
     trigger:
@@ -3252,7 +3252,7 @@ automation:
           value: "{{ states('input_number.set_sg_2_forced_charge_discharge_power') | int}}"
     mode: single
 
-  - id: "automation_sungrow_inverter_2update_battery_forced_charge_discharge_power_input_slider_update"
+  - id: "automation_sungrow_inverter_2_update_battery_forced_charge_discharge_power_input_slider_update"
     alias: "sungrow inverter 2 update battery forced charge discharge power input slider update"
     description: "Updates battery forced charge discharge power input slider"
     trigger:
@@ -3268,7 +3268,7 @@ automation:
           value: "{{ states('sensor.battery_forced_charge_discharge_power_2') }}"
     mode: single
 
-  - id: "automation_sungrow_inverter_2update_battery_max_charge_power"
+  - id: "automation_sungrow_inverter_2_update_battery_max_charge_power"
     alias: "sungrow inverter 2 update battery max charge power"
     description: "Sets battery max charge power"
     trigger:
@@ -3285,7 +3285,7 @@ automation:
           value: "{{ states('input_number.set_sg_2_battery_max_charge_power') |float /10 |int}}"
     mode: single
 
-  - id: "automation_sungrow_inverter_2update_battery_max_charge_power_input_slider_update"
+  - id: "automation_sungrow_inverter_2_update_battery_max_charge_power_input_slider_update"
     alias: "sungrow inverter 2 update battery max charge power input slider update"
     description: "Updates battery max charge power input slider"
     trigger:
@@ -3301,7 +3301,7 @@ automation:
           value: "{{ states('sensor.battery_max_charge_power_2') }}"
     mode: single
 
-  - id: "automation_sungrow_inverter_2update_battery_max_discharge_power"
+  - id: "automation_sungrow_inverter_2_update_battery_max_discharge_power"
     alias: "sungrow inverter 2 update battery max discharge power"
     description: "Sets battery max discharge power"
     trigger:
@@ -3318,7 +3318,7 @@ automation:
           value: "{{ states('input_number.set_sg_2_battery_max_discharge_power')  |float /10 |int}}"
     mode: single
 
-  - id: "automation_sungrow_inverter_2update_battery_max_discharge_power_input_slider_update"
+  - id: "automation_sungrow_inverter_2_update_battery_max_discharge_power_input_slider_update"
     alias: "sungrow inverter 2 update battery max discharge power input slider update"
     description: "Updates battery max discharge power input slider"
     trigger:
@@ -3334,7 +3334,7 @@ automation:
           value: "{{ states('sensor.battery_max_discharge_power_2') }}"
     mode: single
 
-  - id: "automation_sungrow_inverter_2update_battery_charging_start_power"
+  - id: "automation_sungrow_inverter_2_update_battery_charging_start_power"
     alias: "sungrow inverter 2 update battery charging start power"
     description: "Sets battery charging start power"
     trigger:
@@ -3351,7 +3351,7 @@ automation:
           value: "{{ states('input_number.set_sg_2_battery_charging_start_power') |float /10 |int}}"
     mode: single
 
-  - id: "automation_sungrow_inverter_2update_battery_charging_start_power_input_slider_update"
+  - id: "automation_sungrow_inverter_2_update_battery_charging_start_power_input_slider_update"
     alias: "sungrow inverter 2 update battery charging start power input slider update"
     description: "Updates battery charging start power input slider"
     trigger:
@@ -3367,7 +3367,7 @@ automation:
           value: "{{ states('sensor.battery_charging_start_power') }}"
     mode: single
 
-  - id: "automation_sungrow_inverter_2update_battery_discharging_start_power"
+  - id: "automation_sungrow_inverter_2_update_battery_discharging_start_power"
     alias: "sungrow inverter 2 update battery discharging start power"
     description: "Sets battery discharging start power"
     trigger:
@@ -3384,7 +3384,7 @@ automation:
           value: "{{ states('input_number.set_sg_2_battery_discharging_start_power') |float /10 | int}}"
     mode: single
 
-  - id: "automation_sungrow_inverter_2update_battery_discharging_start_power_input_slider_update"
+  - id: "automation_sungrow_inverter_2_update_battery_discharging_start_power_input_slider_update"
     alias: "sungrow inverter 2 update battery discharging start power input slider update"
     description: "Updates battery discharging start power input slider"
     trigger:
@@ -3400,7 +3400,7 @@ automation:
           value: "{{ states('sensor.battery_discharging_start_power_2') }}"
     mode: single
 
-  - id: "automation_sungrow_inverter_2global_mpp_scan_manual_update"
+  - id: "automation_sungrow_inverter_2_global_mpp_scan_manual_update"
     alias: "sungrow inverter 2 global mpp scan manual update"
     description: "Updates Enable/Disable for global mpp scan manual"
     trigger:
@@ -3423,7 +3423,7 @@ automation:
             {% endif %}
     mode: single
 
-  - id: "automation_sungrow_global_2mpp_scan_manual"
+  - id: "automation_sungrow_global_2_mpp_scan_manual"
     alias: "sungrow inverter 2 global mpp scan manual"
     description: "Set global mpp scan manual"
     trigger:
