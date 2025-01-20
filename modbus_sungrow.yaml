@@ -2,7 +2,7 @@
 # https://github.com/mkaiser/Sungrow-SHx-Inverter-Modbus-Home-Assistant
 # by Martin Kaiser
 #
-# last update: 2024-11-02
+# last update: 2025-01-09
 #
 # Note: This YAML file will only work with Home Assistant >= 2024.10
 
@@ -1277,14 +1277,17 @@ modbus:
         scale: 0.1
         scan_interval: 10
 
-      # always positive battery power
+      # old firmware ( before october 2024): always positive battery power
       # use binary_sensor.battery_charging | discharging to retrieve the direction of the energy flow
+      # new firmware: positive if charging and negative if discharging
+      # with new firmware installed we could use this raw value directly as signed battery power
+      # to support both firmwares we use the template sensor "signed battery power"
       - name: Battery power raw
         unique_id: sg_battery_power_raw
         device_address: !secret sungrow_modbus_slave
         address: 13021 # reg 13022
         input_type: input
-        data_type: uint16
+        data_type: int16 #updated to signed int, see issue #406
         precision: 0
         unit_of_measurement: W
         device_class: power
@@ -1292,6 +1295,7 @@ modbus:
         scale: 1
         scan_interval: 10
 
+      # 0..100%  |  min_soc..max_soc
       - name: Battery level
         unique_id: sg_battery_level
         device_address: !secret sungrow_modbus_slave
@@ -1305,6 +1309,7 @@ modbus:
         scale: 0.1
         scan_interval: 60
 
+      # 0..100% calculated internally by the BMS load balancing
       - name: Battery state of health
         unique_id: sg_battery_state_of_health
         device_address: !secret sungrow_modbus_slave
@@ -1810,7 +1815,7 @@ sensor:
     # If the default dashboard does show an "unavailable" sensor, remove the unavailable one
     # and remove the suffix *_2 from daily_consumed_energy_2
     name: "Daily consumed energy (filtered)"
-    entity_id: sensor.daily_consumed_energy_2
+    entity_id: sensor.daily_consumed_energy
     unique_id: sg_daily_consumed_energy_filtered
     # commented following line, due to: 'device_class' is an invalid option for 'sensor.filter', check: device_class
     # device_class: energy
@@ -1887,7 +1892,7 @@ template:
               {# EMS forced mode #}
               {% if (states('sensor.battery_forced_charge_discharge_cmd') == "Forced charge") %}
                 {# in mode Forced charge #}
-                {% if (states('sensor.battery_power_raw')|int > 0 ) %}
+                {% if (states('sensor.battery_power_raw')|int > 0 ) %} 
                   {# power flow from/to battery #}
                   on
                 {% else %} 
@@ -1962,7 +1967,7 @@ template:
               {% endif %}
             {% else %} 
               {# not in EMS forced mode, assuming self consumption mode #}
-              {% if ( ( states('sensor.total_dc_power')|int < states('sensor.load_power')|int ) ) and states('sensor.battery_power_raw')|int > 0 %}
+              {% if ( ( states('sensor.total_dc_power')|int < states('sensor.load_power')|int ) ) and states('sensor.battery_power_raw')|int > 0 %}  
                 {# more power consumed than generated and some battery power --> assuming battery discharging #}
                 on
               {% else %} 
@@ -2359,7 +2364,8 @@ template:
             Unknown - should not see me! code: {{ (states('sensor.ems_mode_selection_raw') |int) }}
           {% endif %}
 
-      - name: Signed battery power # positive if charging and negative if discharging
+      # positive if charging and negative if discharging
+      - name: Signed battery power 
         unique_id: sg_signed_battery_power
         unit_of_measurement: W
         device_class: power
@@ -2372,14 +2378,15 @@ template:
           }}
         state: >-
           {% if is_state('binary_sensor.battery_charging', 'on') %}
-            {{ (states('sensor.battery_power_raw') | float)}} 
+            {{ (states('sensor.battery_power_raw') |float |abs)}} 
           {% elif is_state('binary_sensor.battery_discharging', 'on') %} 
-            {{ (states('sensor.battery_power_raw') | float * -1)}} 
+            {{ (states('sensor.battery_power_raw') |float |abs * -1)}} 
           {% else %} 
             0 
           {% endif %}
 
-      - name: Battery charging power # positive if charging else zero
+      # positive if charging else zero
+      - name: Battery charging power 
         unique_id: sg_battery_charging_power
         unit_of_measurement: W
         device_class: power
@@ -2391,12 +2398,13 @@ template:
           }}
         state: >-
           {% if is_state('binary_sensor.battery_charging', 'on') %}
-            {{ states('sensor.battery_power_raw') }}
+            {{ states('sensor.battery_power_raw')|int |abs }}
           {% else %}
             0
           {% endif %}
 
-      - name: Battery discharging power # positive if discharging else zero
+      # positive if discharging else zero
+      - name: Battery discharging power
         unique_id: sg_battery_discharging_power
         unit_of_measurement: W
         device_class: power
@@ -2408,12 +2416,13 @@ template:
           }}
         state: >-
           {% if is_state('binary_sensor.battery_discharging', 'on') %}
-            {{ states('sensor.battery_power_raw') }}
+            {{ states('sensor.battery_power_raw')|int |abs }}
           {% else %}
             0
           {% endif %}
 
-      - name: Import power # power from grid: positive if importing, else zero
+      # power from grid: positive if importing, else zero
+      - name: Import power
         unique_id: sg_import_power
         unit_of_measurement: W
         device_class: power
@@ -2426,7 +2435,8 @@ template:
             0
           {% endif %}
 
-      - name: Export power # power to grid: positive if exporting, else zero
+      # power to grid: positive if exporting, else zero
+      - name: Export power
         unique_id: sg_export_power
         unit_of_measurement: W
         device_class: power
@@ -2529,7 +2539,7 @@ template:
           }}
 
       # this is the actually **usable energy ** of the battery
-      # with respect to min/ max soc.
+      # with respect to min/ max soc, but WITHOUT the battery health.
       # If min_soc is set to 15 and max soc is set to 90,
       # this value is 0.75 * capacity
       - name: "Battery charge"
@@ -2551,6 +2561,28 @@ template:
             * states('sensor.battery_level')|float /100 
             ) |round(2)
           }}
+
+      # this is the actually **usable energy ** of the battery
+      # with respect to min/ max soc, including the battery health.
+      # This value is determined by multiplying Battery charge
+      # with the health factor (battery_health), which is often a value
+      # starting at 100 and decreases over time. Mine is 98% after 2 years.
+      - name: "Battery charge (health-rated)"
+        unique_id: sg_battery_charge_health_rated
+        unit_of_measurement: kWh
+        device_class: energy_storage
+        state_class: measurement
+        availability: >-
+          {{ 
+          not is_state('sensor.battery_charge', 'unavailable') 
+          and not is_state('sensor.battery_state_of_health', 'unavailable') 
+          }}
+        state: >-
+          {{ 
+            ( states('sensor.battery_charge')|float 
+            * states('sensor.battery_state_of_health')|float / 100 
+            ) |round(2)
+          }}          
 
       # NOTE: 2024-01-11: Unique id was adapted to match the sg_* uid pattern.
       # If the default dashboard does show an "unavailable" sensor, remove the unavailable one
@@ -2964,7 +2996,7 @@ automation:
           entity_id: input_select.set_sg_inverter_run_mode
         data:
           option: >
-            {% if is_state('sensor.sungrow_inverter_state', "Stop") or is_state('sensor.sungrow_inverter_state', "Shutdown") %}
+            {% if is_state('sensor.sungrow_inverter_state', "Shutdown") %}
               Shutdown
             {% else %}
               Enabled
@@ -3177,7 +3209,7 @@ automation:
             {% endif %}
     mode: single
 
-  - id: "automation_sungrow_export_power_limit_mode"
+  - id: "automation_sungrow_inverter_export_power_limit_mode"
     alias: "sungrow inverter export power limit mode"
     description: "Set export power limit mode"
     triggers:
