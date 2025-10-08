@@ -3913,7 +3913,7 @@ automation:
     action:
       - action: modbus.write_register
         data_template:
-          hub: SungrowSHx
+          hub: SungrowSHx 2
           slave: !secret sungrow_modbus_slave_inv2
           address: 33541 # reg 33542
           value: "{{ states('input_number.set_ac_wb_charging_quantity') | int * 10 }}"
@@ -3962,7 +3962,7 @@ automation:
     action:
       - action: modbus.write_register
         data_template:
-          hub: SungrowSHx
+          hub: SungrowSHx 2
           slave: !secret sungrow_modbus_slave_inv2
           address: 33544 # reg 33545
           value: >
@@ -4044,7 +4044,7 @@ automation:
     action:
       - action: modbus.write_register
         data_template:
-          hub: SungrowSHx
+          hub: SungrowSHx 2
           address: 33542 # reg 33543
           slave: !secret sungrow_modbus_slave_inv2
           value: >
@@ -4095,7 +4095,7 @@ automation:
     action:
       - action: modbus.write_register
         data_template:
-          hub: SungrowSHx
+          hub: SungrowSHx 2
           address: 33545 # reg 33546
           slave: !secret sungrow_modbus_slave_inv2
           value: >
@@ -4146,7 +4146,7 @@ automation:
     action:
       - action: modbus.write_register
         data_template:
-          hub: SungrowSHx
+          hub: SungrowSHx 2
           address: 33547 # reg 33548
           slave: !secret sungrow_modbus_slave_inv2
           value: >
@@ -4182,7 +4182,7 @@ automation:
     action:
       - action: modbus.write_register
         data_template:
-          hub: SungrowSHx
+          hub: SungrowSHx 2
           slave: !secret sungrow_modbus_slave_inv2
           address: 33540 # reg 33541
           value: >
@@ -4268,7 +4268,7 @@ automation:
     action:
       - action: modbus.write_register
         data:
-          hub: SungrowSHx
+          hub: SungrowSHx 2
           address: 33549 # reg 33550
           slave: !secret sungrow_modbus_slave_inv2
           value: 170
@@ -4298,7 +4298,7 @@ automation:
     action:
       - action: modbus.write_register
         data:
-          hub: SungrowSHx
+          hub: SungrowSHx 2
           address: 33549 # reg 33550
           slave: !secret sungrow_modbus_slave_inv2
           value: 85
@@ -4330,7 +4330,7 @@ automation:
     action:
       - action: modbus.write_register
         data_template:
-          hub: SungrowSHx
+          hub: SungrowSHx 2
           slave: !secret sungrow_modbus_slave_inv2
           address: 33539 # reg 33540
           value: >
@@ -4363,7 +4363,7 @@ automation:
     action:
       - action: modbus.write_register
         data_template:
-          hub: SungrowSHx
+          hub: SungrowSHx 2
           slave: !secret sungrow_modbus_slave_inv2
           address: 33539 # reg 33540
           value: >
