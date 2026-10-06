@@ -2530,7 +2530,7 @@ input_number:
   ###################################
 
   set_ac_wb_charging_quantity:
-    name: Set charger charging quantity
+    name: Set charger charging quantity inv 3
     min: 1
     max: 200
     step: 1
@@ -2538,7 +2538,7 @@ input_number:
     initial: 200
     
   set_ac_wb_stop_by_soc_percentage:
-    name: Stop charging by SoC percentage
+    name: Stop charging by SoC percentage inv 3
     min: 1
     max: 100
     step: 1
@@ -2546,7 +2546,7 @@ input_number:
     icon: mdi:battery-arrow-down-outline
     
   set_ac_wb_start_by_soc_percentage:
-    name: Start charging by SoC percentage
+    name: Start charging by SoC percentage inv 3
     min: 1
     max: 100
     step: 1
@@ -2562,11 +2562,11 @@ input_button:
   # input_button of charger
   ###################################
   set_ac_wb_start_charging:
-    name: Start charging
+    name: Start charging inv 3
     icon: mdi:play
 
   set_ac_wb_stop_charging:
-    name: Stop charging
+    name: Stop charging inv 3
     icon: mdi:stop
 
   ###################################
@@ -2579,7 +2579,7 @@ input_select:
   ###################################
 
   set_ac_wb_charging_mode:
-    name: Charging mode
+    name: Charging mode inv 3
     options:
       - "Fast charging"
       - "Surplus charging"
@@ -2588,7 +2588,7 @@ input_select:
     icon: mdi:ev-station
 
   set_ac_wb_charging_power_customized_charge:
-    name: Charging power customized charge
+    name: Charging power customized charge inv 3
     options:
       - "16A 11kW"
       - "14A 9,66kW"
@@ -2609,15 +2609,15 @@ input_boolean:
   ###################################
 
   set_ac_wb_surplus_power_from_grid:
-    name: Surplus charging - power from grid
+    name: Surplus charging - power from grid inv 3
     icon: mdi:transmission-tower-export
     
   set_ac_wb_stop_by_soc_enabled:
-    name: Stop charging by SoC enabled
+    name: Stop charging by SoC enabled inv 3
     icon: mdi:battery-arrow-down-outline
     
   set_ac_wb_start_by_soc_enabled:
-    name: Start charging by SoC enabled
+    name: Start charging by SoC enabled inv 3
     icon: mdi:battery-arrow-up-outline
 
   ###################################
@@ -2631,19 +2631,19 @@ input_datetime:
   ###################################
 
   set_ac_wb_charging_duration:
-    name: Charger charging duration picker
+    name: Charger charging duration picker inv 3
     has_date: true
     has_time: true
     icon: mdi:timelapse
 
   set_ac_wb_customized_charge_start_time:
-    name: Charger customized charge start time picker
+    name: Charger customized charge start time picker inv 3
     has_date: true
     has_time: true
     icon: mdi:clock-start
 
   set_ac_wb_customized_charge_end_time:
-    name: Charger customized charge end time picker
+    name: Charger customized charge end time picker inv 3
     has_date: true
     has_time: true
     icon: mdi:clock-end
